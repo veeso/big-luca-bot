@@ -54,6 +54,7 @@
 - [big-luca-bot](#big-luca-bot)
   - [About big-luca-bot 📰](#about-big-luca-bot-)
     - [Features 🎁](#features-)
+  - [Command API 🐚](#command-api-)
   - [Get started 🏁](#get-started-)
   - [Support the developer ☕](#support-the-developer-)
   - [Powered by 💪](#powered-by-)
@@ -75,9 +76,35 @@ big-luca-bot is TODO:
 
 ---
 
+## Command API 🐚
+
+- `/big-perla`
+
+    This command will make the bot sending a "perla del papi"
+
+- `/big-sito`
+
+    This commands will return the OFFICIAL PAPI'S WEBSITE
+
+- `/big-news`
+
+    This commands will return the latest videos from "Il Papi"
+
+- `/big-corsi`
+
+    This command will display the latest Big luca course
+
+- `/big-video`
+
+    This command will display the latest video from "Il Papi"
+
+---
+
 ## Get started 🏁
 
-TODO:
+TODO: <https://t.me/bigluca_bot>
+
+![telegram](/docs/images/big-telegram.webp)
 
 ---
 
