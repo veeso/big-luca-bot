@@ -1,1 +1,1 @@
-release: cargo run --release
+release: ./target/release/big-luca-bot
