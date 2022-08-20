@@ -106,7 +106,7 @@ big-luca-bot is a Telegram bot to get the best aphorisms said by Big Luca and to
 
 Scan this QR code or go to this URL <https://t.me/bigluca_bot> to start a chat with Big Luca bot, then add it to any group or chat directly with him.
 
-![telegram-qr](/docs/images/qr-code.webp)
+![telegram-qr](/docs/images/qr-code-md.webp)
 
 ### Developers
 
