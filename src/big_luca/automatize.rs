@@ -2,8 +2,10 @@
 //!
 //! A module to automatize messages
 
+use super::youtube::Youtube;
 use super::{AnswerBuilder, Aphorism, Stickers};
 
+use chrono::{DateTime, Local};
 use futures::lock::Mutex;
 use teloxide::prelude::*;
 use teloxide::types::ChatId;
@@ -13,8 +15,8 @@ use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
 type AutomatizerResult<T> = Result<T, AutomatizerError>;
 
 lazy_static! {
-    static ref AUTOMATIZER: Option<Mutex<Automatizer>> = None;
     static ref SUBSCRIBED_CHATS: Mutex<Vec<ChatId>> = Mutex::new(Vec::new());
+    static ref LAST_VIDEO_PUBLISHED_DATE: Mutex<DateTime<Local>> = Mutex::new(DateTime::default());
 }
 
 /// Automatizer error
@@ -68,13 +70,31 @@ impl Automatizer {
     /// Setup cron scheduler
     async fn setup_cron_scheduler() -> AutomatizerResult<JobScheduler> {
         let sched = JobScheduler::new().await?;
-        let perla_job = Job::new_async("1/30 * * * * *", |_, _| {
+        // daily aphorism job
+        let morning_aphorism_job = Job::new_async("0 0 8 * * *", |_, _| {
             Box::pin(async move {
-                info!("running perla-job");
+                info!("running morning_aphorism_job");
                 Self::send_perla().await;
             })
         })?;
-        sched.add(perla_job).await?;
+        sched.add(morning_aphorism_job).await?;
+        // evening aphorism job
+        let evening_aphorism_job = Job::new_async("0 0 19 * * *", |_, _| {
+            Box::pin(async move {
+                info!("running evening_aphorism_job");
+                Self::send_perla().await;
+            })
+        })?;
+        sched.add(evening_aphorism_job).await?;
+        // new video check
+        let new_video_check_job = Job::new_async("0 0 * * * *", |_, _| {
+            Box::pin(async move {
+                info!("running new_video_check_job");
+                Self::fetch_latest_video().await;
+            })
+        })?;
+        sched.add(new_video_check_job).await?;
+
         sched
             .start()
             .await
@@ -93,6 +113,47 @@ impl Automatizer {
             debug!("sending scheduled aphorism to {}", chat);
             if let Err(err) = message.clone().send(&bot, *chat).await {
                 error!("failed to send scheduled aphorism to {}: {}", chat, err);
+            }
+        }
+    }
+
+    /// Fetch latest video job
+    async fn fetch_latest_video() {
+        let video = match Youtube::get_latest_video().await {
+            Ok(v) => v,
+            Err(err) => {
+                error!("failed to check latest video: {}", err);
+                return;
+            }
+        };
+        if let Some(date) = video.date {
+            debug!(
+                "last time I checked big-luca videos, big-luca video had date {}; latest has {}",
+                *LAST_VIDEO_PUBLISHED_DATE.lock().await,
+                date
+            );
+            if *LAST_VIDEO_PUBLISHED_DATE.lock().await < date {
+                let bot = Bot::from_env().auto_send();
+                info!(
+                    "Big luca published a new video ({}): {}",
+                    date,
+                    video.title.as_deref().unwrap_or_default()
+                );
+                let message = AnswerBuilder::default()
+                    .text(format!(
+                        "😱😱😱 Il papi ha appena sganciato un nuovo video: {} 💣\n👉 {}",
+                        video.title.as_deref().unwrap_or_default(),
+                        video.url
+                    ))
+                    .sticker(Stickers::luna_e_stelle())
+                    .finalize();
+                for chat in SUBSCRIBED_CHATS.lock().await.iter() {
+                    debug!("sending new video notify to {}", chat);
+                    if let Err(err) = message.clone().send(&bot, *chat).await {
+                        error!("failed to send scheduled aphorism to {}: {}", chat, err);
+                    }
+                }
+                *LAST_VIDEO_PUBLISHED_DATE.lock().await = date;
             }
         }
     }

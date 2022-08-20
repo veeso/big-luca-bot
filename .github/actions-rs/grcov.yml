@@ -6,5 +6,5 @@ ignore:
   - "/*"
   - "C:/*"
   - "../*"
-  - "src/ui/*"
+  - "src/big_luca/*"
   - src/main.rs

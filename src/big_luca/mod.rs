@@ -100,7 +100,7 @@ impl BigLuca {
     async fn get_latest_video() -> Answer {
         match youtube::Youtube::get_latest_video().await {
             Ok(video) => Answer::simple_text(format!(
-                "{} 👉 {}",
+                "😱 {} 👉 {}",
                 video.title.unwrap_or_default(),
                 video.url
             )),
@@ -127,7 +127,7 @@ impl BigLuca {
     async fn subscribe_to_automatizer(chat_id: &ChatId) -> Answer {
         AUTOMATIZER.get().unwrap().subscribe(chat_id).await;
         AnswerBuilder::default()
-            .text("sei ora iscritto alla piattaforma Katanga! Da ora riceverai tutte le perle del papi e i suoi ultimi aggiornamenti automaticamente su questa chat!")
+            .text("sei ora iscritto alla piattaforma Katanga! 🚀🚀🚀 Da ora riceverai tutte le perle del papi e i suoi ultimi aggiornamenti automaticamente su questa chat! 😱")
             .sticker(Stickers::got_it())
             .finalize()
     }
@@ -135,7 +135,7 @@ impl BigLuca {
     async fn unsubscribe_from_automatizer(chat_id: &ChatId) -> Answer {
         match AUTOMATIZER.get().unwrap().unsubscribe(chat_id).await {
             Ok(()) => AnswerBuilder::default()
-                .text("ti sei disinscritto dalla piattaforma Katanga, ora torna pure dai tuoi amici sfigati a vendere ai poveri.")
+                .text("ti sei disinscritto dalla piattaforma Katanga 😡, ora torna pure dai tuoi amici sfigati a vendere ai poveri. 😜")
                 .sticker(Stickers::grrr())
                 .finalize(),
             Err(AutomatizerError::ChatIsNotSubscribed(_)) => AnswerBuilder::default()
