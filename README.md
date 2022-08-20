@@ -7,7 +7,7 @@
 <p align="center">~ Le perle e le news del papi su Telegram in ogni momento ~</p>
 
 <p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
-<p align="center">Current version: 0.1.0 (05/08/2022)</p>
+<p align="center">Current version: 0.1.0 (20/08/2022)</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/Unlicense"
@@ -53,9 +53,11 @@
 
 - [big-luca-bot](#big-luca-bot)
   - [About big-luca-bot 📰](#about-big-luca-bot-)
-    - [Features 🎁](#features-)
   - [Command API 🐚](#command-api-)
   - [Get started 🏁](#get-started-)
+    - [Users](#users)
+    - [Developers](#developers)
+      - [Deploy with heroku](#deploy-with-heroku)
   - [Support the developer ☕](#support-the-developer-)
   - [Powered by 💪](#powered-by-)
   - [Contributing and issues 🤝🏻](#contributing-and-issues-)
@@ -64,15 +66,13 @@
 
 ---
 
+![telegram](/docs/images/big-telegram.webp)
+
 ## About big-luca-bot 📰
 
-big-luca-bot is TODO:
+big-luca-bot is a Telegram bot to get the best aphorisms said by Big Luca and to get the latest news from "Il Papi" on your favourite telegram groups.
 
 ![Demo](/docs/images/demo.gif)
-
-### Features 🎁
-
-- TODO:
 
 ---
 
@@ -102,9 +102,29 @@ big-luca-bot is TODO:
 
 ## Get started 🏁
 
-TODO: <https://t.me/bigluca_bot>
+### Users
 
-![telegram](/docs/images/big-telegram.webp)
+Scan this QR code or go to this URL <https://t.me/bigluca_bot> to start a chat with Big Luca bot, then add it to any group or chat directly with him.
+
+![telegram-qr](/docs/images/qr-code.webp)
+
+### Developers
+
+If you want to develop on this bot, you can follow these simple steps:
+
+1. Clone this repository `git clone git@github.com:veeso/big-luca-bot.git`
+2. Create your bot with the [Botfather](https://t.me/botfather)
+3. Get your API key
+4. Set your API key in your environment using the variable `TELOXIDE_TOKEN`
+5. Run the big-luca bot
+
+#### Deploy with heroku
+
+You can then deploy your own version of the big-luca bot using `heroku`, with these simple steps:
+
+1. Create your heroku app `heroku create --buildpack emk/rust`
+2. configure the Telegram API key with `heroku config:set TELOXIDE_TOKEN=<YOUR_API_KEY>`
+3. git push heroku main
 
 ---
 
@@ -124,7 +144,9 @@ You can make a donation with one of these platforms:
 
 ## Powered by 💪
 
+- [feed-rs](https://github.com/feed-rs/feed-rs)
 - [teloxide](https://github.com/teloxide/teloxide)
+- [tokio](https://tokio.rs/)
 
 ---
 
