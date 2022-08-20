@@ -32,11 +32,12 @@ impl AnswerBuilder {
 }
 
 /// The answer to send to the chat
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Answer {
     script: Vec<Media>,
 }
 
+#[derive(Clone)]
 /// A media in the chat
 enum Media {
     Text(String),

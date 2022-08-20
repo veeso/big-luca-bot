@@ -4,7 +4,7 @@
 
 use teloxide::utils::command::BotCommands;
 
-#[derive(BotCommands, Clone)]
+#[derive(BotCommands, Clone, Debug)]
 #[command(rename = "lowercase", description = "These commands are supported:")]
 pub enum Command {
     #[command(description = "visualizza gli attuali corsi disponibili del Papi")]
@@ -13,6 +13,10 @@ pub enum Command {
     BigNews,
     #[command(description = "il Papi ti lancia una perla")]
     BigPerla,
+    #[command(description = "imposta il papi per inviarti i messaggi automatici")]
+    BigKatanga,
+    #[command(description = "disattiva l'invio dei messaggi automatici del papi")]
+    BigPezzente,
     #[command(description = "vai al sito del Papi")]
     BigSito,
     #[command(description = "visualizza l'ultimo video del Papi")]

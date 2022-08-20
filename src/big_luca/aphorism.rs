@@ -75,7 +75,7 @@ const PAPI_APHORISM: &[&str] = &[
     "Se avete capito l'effetto composto pensate che avete 16 anni e mettete 200$ al mese nella borsa. È bellissimo.",
     "La normalità dovrebbe essere andare in tutti i ristoranti che volete senza guardare il prezzo.",
     "Non esiste nessuna azienda che prosperi con margini bassi.",
-    "Io ho amici decamilionari, a cui avrei regalato i miei corsi, che li comprano senza dirmel, perché sono persone con un'altra mentalità, non da poveri.",
+    "Io ho amici decamilionari, a cui avrei regalato i miei corsi, che li comprano senza dirmelo, perché sono persone con un'altra mentalità, non da poveri.",
     "Se io faccio pagare una pizza 15€ e me la pagano... è tutto a posto.",
     "Uno degli errori è guardare la concorrenza e copiargli il prezzo o addirittura abbassarlo.",
     "Non è più difficile vendere a prezzi alti. Lo è se provate a vendere a prezzi alti ai poveri.",

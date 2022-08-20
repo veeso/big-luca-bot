@@ -66,8 +66,6 @@
 
 ---
 
-![telegram](/docs/images/big-telegram.webp)
-
 ## About big-luca-bot 📰
 
 big-luca-bot is a Telegram bot to get the best aphorisms said by Big Luca and to get the latest news from "Il Papi" on your favourite telegram groups.
@@ -78,25 +76,35 @@ big-luca-bot is a Telegram bot to get the best aphorisms said by Big Luca and to
 
 ## Command API 🐚
 
-- `/big-perla`
-
-    This command will make the bot sending a "perla del papi"
-
-- `/big-sito`
-
-    This commands will return the OFFICIAL PAPI'S WEBSITE
-
-- `/big-news`
-
-    This commands will return the latest videos from "Il Papi"
-
-- `/big-corsi`
+- `/bigcorsi`
 
     This command will display the latest Big luca course
 
-- `/big-video`
+- `/bigkatanga`
+
+    This command will make the bot to send automatic message
+
+    > ❗ Automatic messages includes daily aphorisms and new videos
+
+- `/bignews`
+
+    This commands will return the latest videos from "Il Papi"
+
+- `/bigperla`
+
+    This command will make the bot sending a "perla del papi"
+
+- `/bigsito`
+
+    This commands will return the OFFICIAL PAPI'S WEBSITE
+
+- `/bigvideo`
 
     This command will display the latest video from "Il Papi"
+
+<p align="center">
+  <img src="/docs/images/big-telegram.webp" />
+</p>
 
 ---
 
