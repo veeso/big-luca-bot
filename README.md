@@ -94,6 +94,10 @@ big-luca-bot is a Telegram bot to get the best aphorisms said by Big Luca and to
 
     This command will make the bot sending a "perla del papi"
 
+- `/bigpezzente`
+
+    Unsubscribe from automated messages
+
 - `/bigsito`
 
     This commands will return the OFFICIAL PAPI'S WEBSITE
