@@ -1,1 +1,1 @@
-web: ./target/release/big-luca-bot
+release: ./target/release/big-luca-bot
