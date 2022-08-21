@@ -12,6 +12,10 @@ Released on ??
 
 - New aphorisms
 - Use webhook on heroku
+- Changed scheduled jobs:
+  - morning aphorism: 7AM UTC
+  - evening aphorism: 6PM UTC
+  - video poll: every hour at 30minutes
 
 ## 0.1.0
 

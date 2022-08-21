@@ -71,7 +71,7 @@ impl Automatizer {
     async fn setup_cron_scheduler() -> AutomatizerResult<JobScheduler> {
         let sched = JobScheduler::new().await?;
         // daily aphorism job
-        let morning_aphorism_job = Job::new_async("0 0 8 * * *", |_, _| {
+        let morning_aphorism_job = Job::new_async("0 0 7 * * *", |_, _| {
             Box::pin(async move {
                 info!("running morning_aphorism_job");
                 Self::send_perla().await;
@@ -79,7 +79,7 @@ impl Automatizer {
         })?;
         sched.add(morning_aphorism_job).await?;
         // evening aphorism job
-        let evening_aphorism_job = Job::new_async("0 0 19 * * *", |_, _| {
+        let evening_aphorism_job = Job::new_async("0 0 18 * * *", |_, _| {
             Box::pin(async move {
                 info!("running evening_aphorism_job");
                 Self::send_perla().await;
@@ -87,7 +87,7 @@ impl Automatizer {
         })?;
         sched.add(evening_aphorism_job).await?;
         // new video check
-        let new_video_check_job = Job::new_async("0 0 * * * *", |_, _| {
+        let new_video_check_job = Job::new_async("0 30 * * * *", |_, _| {
             Box::pin(async move {
                 info!("running new_video_check_job");
                 Self::fetch_latest_video().await;
