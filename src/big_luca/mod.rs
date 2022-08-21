@@ -9,7 +9,8 @@ mod commands;
 mod stickers;
 mod youtube;
 
-use teloxide::{prelude::*, utils::command::BotCommands};
+use teloxide::{dispatching::update_listeners::webhooks, prelude::*, utils::command::BotCommands};
+use url::Url;
 
 use answer::{Answer, AnswerBuilder};
 use aphorism::Aphorism;
@@ -43,6 +44,35 @@ impl BigLuca {
 
     /// Run big luca bot
     pub async fn run(self) -> anyhow::Result<()> {
+        // setup hooks
+        let port = Self::get_heroku_port()?;
+        if let Some(port) = port {
+            Self::run_on_heroku(self, port).await
+        } else {
+            Self::run_simple(self).await
+        }
+    }
+
+    /// run bot with heroku webhooks
+    async fn run_on_heroku(self, port: u16) -> anyhow::Result<()> {
+        info!("running bot with heroku listener (PORT: {})", port);
+        let addr = ([0, 0, 0, 0], port).into();
+        let token = self.bot.inner().token();
+        let host = std::env::var("HOST").map_err(|_| anyhow::anyhow!("HOST is not SET"))?;
+        let url = Url::parse(&format!("https://{host}/webhooks/{token}")).unwrap();
+        debug!("configuring listener {}...", url);
+        let listener = webhooks::axum(self.bot.clone(), webhooks::Options::new(addr, url))
+            .await
+            .map_err(|e| anyhow::anyhow!("could not configure listener: {}", e))?;
+        // start bot
+        teloxide::commands_repl_with_listener(self.bot, Self::answer, listener, Command::ty())
+            .await;
+        Ok(())
+    }
+
+    /// run bot without webhooks
+    async fn run_simple(self) -> anyhow::Result<()> {
+        info!("running bot without webhooks");
         teloxide::commands_repl(self.bot, Self::answer, Command::ty()).await;
         Ok(())
     }
@@ -152,5 +182,14 @@ impl BigLuca {
             .text(err)
             .sticker(Stickers::despair())
             .finalize()
+    }
+
+    // get heroku port
+    fn get_heroku_port() -> anyhow::Result<Option<u16>> {
+        match std::env::var("PORT").map(|x| x.parse()) {
+            Err(_) => Ok(None),
+            Ok(Ok(p)) => Ok(Some(p)),
+            Ok(Err(e)) => anyhow::bail!("could not parse PORT environment variable: {}", e),
+        }
     }
 }
