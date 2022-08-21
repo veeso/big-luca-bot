@@ -16,6 +16,7 @@ Released on ??
   - morning aphorism: 7AM UTC
   - evening aphorism: 6PM UTC
   - video poll: every hour at 30minutes
+- Send a notification when the bot stops, to remind chats to resubscribe to katanga
 
 ## 0.1.0
 

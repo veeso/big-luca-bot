@@ -15,7 +15,7 @@ use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
 type AutomatizerResult<T> = Result<T, AutomatizerError>;
 
 lazy_static! {
-    static ref SUBSCRIBED_CHATS: Mutex<Vec<ChatId>> = Mutex::new(Vec::new());
+    pub static ref SUBSCRIBED_CHATS: Mutex<Vec<ChatId>> = Mutex::new(Vec::new());
     static ref LAST_VIDEO_PUBLISHED_DATE: Mutex<DateTime<Local>> = Mutex::new(DateTime::default());
 }
 
