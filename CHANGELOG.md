@@ -8,7 +8,7 @@
 
 ## 0.1.1
 
-Released on ??
+Released on 21/08/2022
 
 - New aphorisms
 - Use webhook on heroku
