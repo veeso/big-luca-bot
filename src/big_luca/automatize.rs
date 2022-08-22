@@ -53,13 +53,13 @@ impl Automatizer {
     pub async fn subscribe(&self, chat: &ChatId) -> anyhow::Result<()> {
         info!("subscribed {} to the automatizer", chat);
         let repository = Repository::connect().await?;
-        repository.insert_chat(chat.clone()).await
+        repository.insert_chat(*chat).await
     }
 
     /// Unsubscribe chat from automatizer. If the chat is not currently subscribed, return error
     pub async fn unsubscribe(&self, chat: &ChatId) -> anyhow::Result<()> {
         let repository = Repository::connect().await?;
-        repository.delete_chat(chat.clone()).await
+        repository.delete_chat(*chat).await
     }
 
     /// Setup cron scheduler
@@ -163,7 +163,7 @@ impl Automatizer {
     pub async fn notify_started() -> anyhow::Result<()> {
         let bot = Bot::from_env().auto_send();
         let message = AnswerBuilder::default()
-            .text(format!("😱😱😱 Il papi è tornato online 💣😎",))
+            .text("😱😱😱 Il papi è tornato online 💣😎".to_string())
             .sticker(Stickers::got_it())
             .finalize();
         for chat in Self::subscribed_chats().await?.iter() {

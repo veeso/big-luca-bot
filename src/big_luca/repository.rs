@@ -51,7 +51,7 @@ impl Repository {
                             x.id(),
                             x.created_at()
                                 .map(|x| x.to_rfc3339())
-                                .unwrap_or(String::from("date error"))
+                                .unwrap_or_else(|_| String::from("date error"))
                         );
                         x.id()
                     })

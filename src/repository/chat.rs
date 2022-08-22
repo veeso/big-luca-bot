@@ -40,7 +40,7 @@ impl Chat {
             SELECT *
             FROM chat"#,
         )
-        .fetch_all(&*db)
+        .fetch_all(db)
         .await
         .map_err(RepositoryError::from)
     }
@@ -51,7 +51,7 @@ impl Chat {
         let rows = sqlx::query("INSERT INTO chat (id, created_at) VALUES ($1, $2)")
             .bind(self.id)
             .bind(&self.created_at)
-            .execute(&*db)
+            .execute(db)
             .await
             .map_err(RepositoryError::from)?
             .rows_affected();
@@ -67,7 +67,7 @@ impl Chat {
         debug!("deleting chat {} from repository", self.id);
         sqlx::query("DELETE FROM chat WHERE id = $1")
             .bind(self.id)
-            .execute(&*db)
+            .execute(db)
             .await
             .map_err(RepositoryError::from)?;
 
