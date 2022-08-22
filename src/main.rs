@@ -9,6 +9,7 @@ extern crate lazy_static;
 extern crate tracing;
 
 mod big_luca;
+mod repository;
 mod utils;
 mod youtube;
 

@@ -2,6 +2,7 @@
 //!
 //! A module to automatize messages
 
+use super::repository::Repository;
 use super::youtube::Youtube;
 use super::{AnswerBuilder, Aphorism, Stickers};
 
@@ -15,15 +16,12 @@ use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
 type AutomatizerResult<T> = Result<T, AutomatizerError>;
 
 lazy_static! {
-    pub static ref SUBSCRIBED_CHATS: Mutex<Vec<ChatId>> = Mutex::new(Vec::new());
     static ref LAST_VIDEO_PUBLISHED_DATE: Mutex<DateTime<Local>> = Mutex::new(DateTime::default());
 }
 
 /// Automatizer error
 #[derive(Debug, Error)]
 pub enum AutomatizerError {
-    #[error("chat {0} is not currently subscribed to the automatizer")]
-    ChatIsNotSubscribed(ChatId),
     #[error("scheduler error: {0}")]
     Scheduler(JobSchedulerError),
 }
@@ -43,28 +41,25 @@ impl Automatizer {
     /// Start automatizer
     pub async fn start() -> AutomatizerResult<Self> {
         debug!("starting automatizer");
+        if let Err(err) = Self::notify_started().await {
+            error!("failed to send start notify: {}", err);
+        }
         Ok(Self {
             scheduler: Self::setup_cron_scheduler().await?,
         })
     }
 
     /// Subscribe a chat to the automatizer
-    pub async fn subscribe(&self, chat: &ChatId) {
+    pub async fn subscribe(&self, chat: &ChatId) -> anyhow::Result<()> {
         info!("subscribed {} to the automatizer", chat);
-        SUBSCRIBED_CHATS.lock().await.push(*chat);
+        let repository = Repository::connect().await?;
+        repository.insert_chat(chat.clone()).await
     }
 
     /// Unsubscribe chat from automatizer. If the chat is not currently subscribed, return error
-    pub async fn unsubscribe(&self, chat: &ChatId) -> AutomatizerResult<()> {
-        let index = SUBSCRIBED_CHATS.lock().await.iter().position(|x| x == chat);
-        if let Some(index) = index {
-            SUBSCRIBED_CHATS.lock().await.remove(index);
-            info!("unsubscribed {} to the automatizer", chat);
-            Ok(())
-        } else {
-            warn!("failed to unsubscribe {}; it's not subscribed", chat);
-            Err(AutomatizerError::ChatIsNotSubscribed(*chat))
-        }
+    pub async fn unsubscribe(&self, chat: &ChatId) -> anyhow::Result<()> {
+        let repository = Repository::connect().await?;
+        repository.delete_chat(chat.clone()).await
     }
 
     /// Setup cron scheduler
@@ -74,7 +69,9 @@ impl Automatizer {
         let morning_aphorism_job = Job::new_async("0 0 7 * * *", |_, _| {
             Box::pin(async move {
                 info!("running morning_aphorism_job");
-                Self::send_perla().await;
+                if let Err(err) = Self::send_perla().await {
+                    error!("evening_aphorism_job failed: {}", err);
+                }
             })
         })?;
         sched.add(morning_aphorism_job).await?;
@@ -82,7 +79,9 @@ impl Automatizer {
         let evening_aphorism_job = Job::new_async("0 0 18 * * *", |_, _| {
             Box::pin(async move {
                 info!("running evening_aphorism_job");
-                Self::send_perla().await;
+                if let Err(err) = Self::send_perla().await {
+                    error!("evening_aphorism_job failed: {}", err);
+                }
             })
         })?;
         sched.add(evening_aphorism_job).await?;
@@ -90,7 +89,9 @@ impl Automatizer {
         let new_video_check_job = Job::new_async("0 30 * * * *", |_, _| {
             Box::pin(async move {
                 info!("running new_video_check_job");
-                Self::fetch_latest_video().await;
+                if let Err(err) = Self::fetch_latest_video().await {
+                    error!("new_video_check_job failed: {}", err);
+                }
             })
         })?;
         sched.add(new_video_check_job).await?;
@@ -103,27 +104,27 @@ impl Automatizer {
     }
 
     /// Send perla
-    async fn send_perla() {
+    async fn send_perla() -> anyhow::Result<()> {
         let bot = Bot::from_env().auto_send();
         let message = AnswerBuilder::default()
             .text(Aphorism::get_random())
             .sticker(Stickers::random())
             .finalize();
-        for chat in SUBSCRIBED_CHATS.lock().await.iter() {
+        for chat in Self::subscribed_chats().await?.iter() {
             debug!("sending scheduled aphorism to {}", chat);
             if let Err(err) = message.clone().send(&bot, *chat).await {
                 error!("failed to send scheduled aphorism to {}: {}", chat, err);
             }
         }
+        Ok(())
     }
 
     /// Fetch latest video job
-    async fn fetch_latest_video() {
+    async fn fetch_latest_video() -> anyhow::Result<()> {
         let video = match Youtube::get_latest_video().await {
             Ok(v) => v,
             Err(err) => {
-                error!("failed to check latest video: {}", err);
-                return;
+                anyhow::bail!("failed to check latest video: {}", err)
             }
         };
         if let Some(date) = video.date {
@@ -147,7 +148,7 @@ impl Automatizer {
                     ))
                     .sticker(Stickers::luna_e_stelle())
                     .finalize();
-                for chat in SUBSCRIBED_CHATS.lock().await.iter() {
+                for chat in Self::subscribed_chats().await?.iter() {
                     debug!("sending new video notify to {}", chat);
                     if let Err(err) = message.clone().send(&bot, *chat).await {
                         error!("failed to send scheduled aphorism to {}: {}", chat, err);
@@ -156,6 +157,27 @@ impl Automatizer {
                 *LAST_VIDEO_PUBLISHED_DATE.lock().await = date;
             }
         }
+        Ok(())
+    }
+
+    pub async fn notify_started() -> anyhow::Result<()> {
+        let bot = Bot::from_env().auto_send();
+        let message = AnswerBuilder::default()
+            .text(format!("😱😱😱 Il papi è tornato online 💣😎",))
+            .sticker(Stickers::got_it())
+            .finalize();
+        for chat in Self::subscribed_chats().await?.iter() {
+            debug!("sending new video notify to {}", chat);
+            if let Err(err) = message.clone().send(&bot, *chat).await {
+                error!("failed to send start notify to {}: {}", chat, err);
+            }
+        }
+        Ok(())
+    }
+
+    pub async fn subscribed_chats() -> anyhow::Result<Vec<ChatId>> {
+        let repository = Repository::connect().await?;
+        repository.get_subscribed_chats().await
     }
 }
 

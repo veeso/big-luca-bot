@@ -10,7 +10,7 @@ license = "Unlicense"
 name = "big-luca-bot"
 readme = "README.md"
 repository = "https://github.com/veeso/big-luca-bot"
-version = "0.1.1"
+version = "0.1.2"
 
 [[bin]]
 name = "big-luca-bot"
@@ -26,6 +26,7 @@ lazy_static = "^1.4.0"
 once_cell = "^1.13"
 rand = "0.8.5"
 reqwest = { version = "^0.11", features = [ "rustls-tls" ] }
+sqlx = { version = "^0.6", features = [ "runtime-tokio-rustls", "sqlite" ] }
 teloxide = { version = "^0.10", features = ["macros", "auto-send", "rustls", "webhooks", "webhooks-axum"] }
 thiserror = "^1.0"
 tokio = { version = "1.20.1", features = [ "full" ] }
@@ -36,3 +37,4 @@ url = "2.2.2"
 
 [dev-dependencies]
 pretty_assertions = "^1.2.1"
+tempfile = "^3.2.0"

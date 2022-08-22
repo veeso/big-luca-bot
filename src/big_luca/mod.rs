@@ -6,6 +6,7 @@ mod answer;
 mod aphorism;
 mod automatize;
 mod commands;
+mod repository;
 mod stickers;
 mod youtube;
 
@@ -14,7 +15,7 @@ use url::Url;
 
 use answer::{Answer, AnswerBuilder};
 use aphorism::Aphorism;
-use automatize::{Automatizer, AutomatizerError};
+use automatize::Automatizer;
 use commands::Command;
 use once_cell::sync::OnceCell;
 use stickers::Stickers;
@@ -157,11 +158,13 @@ impl BigLuca {
 
     /// Subscribe chat to the automatizer
     async fn subscribe_to_automatizer(chat_id: &ChatId) -> Answer {
-        AUTOMATIZER.get().unwrap().subscribe(chat_id).await;
-        AnswerBuilder::default()
+        match AUTOMATIZER.get().unwrap().subscribe(chat_id).await {
+            Ok(_) => AnswerBuilder::default()
             .text("sei ora iscritto alla piattaforma Katanga! 🚀🚀🚀 Da ora riceverai tutte le perle del papi e i suoi ultimi aggiornamenti automaticamente su questa chat! 😱")
             .sticker(Stickers::got_it())
-            .finalize()
+            .finalize(),
+            Err(err) => Self::error(err),
+        }
     }
 
     async fn unsubscribe_from_automatizer(chat_id: &ChatId) -> Answer {
@@ -169,10 +172,6 @@ impl BigLuca {
             Ok(()) => AnswerBuilder::default()
                 .text("ti sei disinscritto dalla piattaforma Katanga 😡, ora torna pure dai tuoi amici sfigati a vendere ai poveri. 😜")
                 .sticker(Stickers::grrr())
-                .finalize(),
-            Err(AutomatizerError::ChatIsNotSubscribed(_)) => AnswerBuilder::default()
-                .text("prima di disinscriverti da Katanga, devi prima iscrivertici")
-                .sticker(Stickers::thinking_seated())
                 .finalize(),
             Err(err) => Self::error(err),
         }
@@ -183,10 +182,17 @@ impl BigLuca {
         info!("bot is shutting down; sending katanga reminder");
         let bot = Bot::from_env().auto_send();
         let message = AnswerBuilder::default()
-            .text("il Papi bot si sta riavviando 😱😨, ricorda di rilanciare il comando /bigkatanga tra qualche minuto in modo da non perderti tutte le novità del Papi 😎")
+            .text("il Papi bot si sta riavviando 😱😨, quando torna dal volo col privatino ti avvisa 😎")
             .sticker(Stickers::oh_no())
             .finalize();
-        for chat in automatize::SUBSCRIBED_CHATS.lock().await.iter() {
+        let chats = match automatize::Automatizer::subscribed_chats().await {
+            Ok(c) => c,
+            Err(err) => {
+                error!("failed to get chats: {}", err);
+                return;
+            }
+        };
+        for chat in chats.iter() {
             debug!("sending katanga reminder to {}", chat);
             if let Err(err) = message.clone().send(&bot, *chat).await {
                 error!("failed to katang reminder to {}: {}", chat, err);
