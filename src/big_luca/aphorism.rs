@@ -81,7 +81,9 @@ const PAPI_APHORISM: &[&str] = &[
     "Non è più difficile vendere a prezzi alti. Lo è se provate a vendere a prezzi alti ai poveri.",
     "Non è vero che è più facile vendere low ticket invece che high ticket.",
     "Arrivati ad un certo livello ragazzi non è più il marketing a fare la differenza...",
-    "Ci sono persone di successo che NON si alzano alle 5-6-7 di mattino."
+    "Ci sono persone di successo che NON si alzano alle 5-6-7 di mattino.",
+    "Urge privatino!",
+    "Chi è povero non capisce i ricchi, sono come alieni.",
 ];
 
 #[cfg(test)]

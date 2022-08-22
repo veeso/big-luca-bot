@@ -7,7 +7,7 @@
 <p align="center">~ Le perle e le news del papi su Telegram in ogni momento ~</p>
 
 <p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
-<p align="center">Current version: 0.1.1 (21/08/2022)</p>
+<p align="center">Current version: 0.1.2 (22/08/2022)</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/Unlicense"
