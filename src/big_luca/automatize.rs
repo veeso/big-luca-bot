@@ -51,15 +51,18 @@ impl Automatizer {
 
     /// Subscribe a chat to the automatizer
     pub async fn subscribe(&self, chat: &ChatId) -> anyhow::Result<()> {
-        info!("subscribed {} to the automatizer", chat);
         let repository = Repository::connect().await?;
-        repository.insert_chat(*chat).await
+        repository.insert_chat(*chat).await?;
+        info!("subscribed {} to the automatizer", chat);
+        Ok(())
     }
 
     /// Unsubscribe chat from automatizer. If the chat is not currently subscribed, return error
     pub async fn unsubscribe(&self, chat: &ChatId) -> anyhow::Result<()> {
         let repository = Repository::connect().await?;
-        repository.delete_chat(*chat).await
+        repository.delete_chat(*chat).await?;
+        info!("unsubscribed {} from the automatizer", chat);
+        Ok(())
     }
 
     /// Setup cron scheduler

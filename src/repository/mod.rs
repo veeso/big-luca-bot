@@ -31,6 +31,7 @@ pub struct SqliteDb {
 impl SqliteDb {
     /// Connect to sqlite db
     pub async fn connect(database_url: &str) -> RepositoryResult<Self> {
+        info!("opening database at {}", database_url);
         let db = SqlitePool::connect(database_url)
             .await
             .map_err(RepositoryError::from)
@@ -46,6 +47,7 @@ impl SqliteDb {
 
     /// Init db tables
     async fn init_tables(&self) -> RepositoryResult<()> {
+        debug!("initializing tables");
         // chat table
         sqlx::query(
             r#"CREATE TABLE IF NOT EXISTS chat (

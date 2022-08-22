@@ -128,8 +128,9 @@ If you want to develop on this bot, you can follow these simple steps:
 2. Create your bot with the [Botfather](https://t.me/botfather)
 3. Get your API key
 4. Set your API key in your environment using the variable `TELOXIDE_TOKEN`
-5. Install `sqlx-cli` with `cargo install sqlx-cli --no-default-features --features rustls,sqlite`
-6. Run the big-luca bot
+5. Set your database path in your environment using the variable `DATABASE_URI`
+6. Touch the database file `touch $DATABASE_URI`
+7. Run the big-luca bot
 
 #### Deploy with heroku
 
