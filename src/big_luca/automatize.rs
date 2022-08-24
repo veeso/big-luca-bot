@@ -155,7 +155,7 @@ impl Automatizer {
             "last time I checked big-luca videos, big-luca video had date {:?}; latest has {:?}",
             last_video_pubdate, video.date
         );
-        let date = video.date.unwrap_or(Utc::now());
+        let date = video.date.unwrap_or_else(Utc::now);
         if last_video_pubdate.map(|x| x < date).unwrap_or(false) {
             let bot = Bot::from_env().auto_send();
             info!(
@@ -197,7 +197,7 @@ impl Automatizer {
             "last time I checked big-luca ig posts, big-luca ig post had date {:?}; latest has {:?}",
             last_post_pubdate, post.date
         );
-        let date = post.date.unwrap_or(Utc::now());
+        let date = post.date.unwrap_or_else(Utc::now);
         if last_post_pubdate.map(|x| x < date).unwrap_or(false) {
             let bot = Bot::from_env().auto_send();
             info!(
