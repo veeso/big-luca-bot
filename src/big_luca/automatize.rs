@@ -69,7 +69,7 @@ impl Automatizer {
     async fn setup_cron_scheduler() -> AutomatizerResult<JobScheduler> {
         let sched = JobScheduler::new().await?;
         // daily aphorism job
-        let morning_aphorism_job = Job::new_async("0 0 7 * * *", |_, _| {
+        let morning_aphorism_job = Job::new_async("0 0 6 * * *", |_, _| {
             Box::pin(async move {
                 info!("running morning_aphorism_job");
                 if let Err(err) = Self::send_perla().await {
@@ -78,8 +78,17 @@ impl Automatizer {
             })
         })?;
         sched.add(morning_aphorism_job).await?;
+        let afternoon_aphorism_job = Job::new_async("0 30 12 * * *", |_, _| {
+            Box::pin(async move {
+                info!("running afternoon_aphorism_job");
+                if let Err(err) = Self::send_perla().await {
+                    error!("afternoon_aphorism_job failed: {}", err);
+                }
+            })
+        })?;
+        sched.add(afternoon_aphorism_job).await?;
         // evening aphorism job
-        let evening_aphorism_job = Job::new_async("0 0 18 * * *", |_, _| {
+        let evening_aphorism_job = Job::new_async("0 30 17 * * *", |_, _| {
             Box::pin(async move {
                 info!("running evening_aphorism_job");
                 if let Err(err) = Self::send_perla().await {

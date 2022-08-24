@@ -84,6 +84,10 @@ const PAPI_APHORISM: &[&str] = &[
     "Ci sono persone di successo che NON si alzano alle 5-6-7 di mattino.",
     "Urge privatino!",
     "Chi è povero non capisce i ricchi, sono come alieni.",
+    "Le persone sono pericolose, voi dovete essere terrorizzati dalle persone",
+    "La vostra vita è una merda, perché siete circondati dalle persone tossiche. Dovete isolarvi.",
+    "Le notifiche sono il MALE assoluto.",
+    "Se siete delle persone ambiziose e volete di più dalla vita dovete ISOLARVI.",
 ];
 
 #[cfg(test)]
