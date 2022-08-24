@@ -5,6 +5,7 @@
 use crate::big_luca::redis::RedisRepository;
 
 use super::repository::Repository;
+use super::rsshub::RssHubClient;
 use super::youtube::Youtube;
 use super::{AnswerBuilder, Aphorism, Stickers};
 
@@ -104,6 +105,16 @@ impl Automatizer {
             })
         })?;
         sched.add(new_video_check_job).await?;
+        // new instagram post job
+        let new_instagram_post_job = Job::new_async("0 15 * * * *", |_, _| {
+            Box::pin(async move {
+                info!("running new_instagram_post_job");
+                if let Err(err) = Self::fetch_latest_instagram_post().await {
+                    error!("new_instagram_post_job failed: {}", err);
+                }
+            })
+        })?;
+        sched.add(new_instagram_post_job).await?;
 
         sched
             .start()
@@ -167,6 +178,48 @@ impl Automatizer {
                 }
             }
             redis_client.set_last_video_pubdate(date).await?;
+        }
+        Ok(())
+    }
+
+    async fn fetch_latest_instagram_post() -> anyhow::Result<()> {
+        let post = match RssHubClient::get_latest_post().await {
+            Ok(v) => v,
+            Err(err) => {
+                anyhow::bail!("failed to check latest ig post: {}", err)
+            }
+        };
+
+        // get last video pub date
+        let mut redis_client = RedisRepository::connect()?;
+        let last_post_pubdate = redis_client.get_last_instagram_update().await?;
+        debug!(
+            "last time I checked big-luca ig posts, big-luca ig post had date {:?}; latest has {:?}",
+            last_post_pubdate, post.date
+        );
+        let date = post.date.unwrap_or(Utc::now());
+        if last_post_pubdate.map(|x| x < date).unwrap_or(false) {
+            let bot = Bot::from_env().auto_send();
+            info!(
+                "Big luca published a ig post ({:?}): {}",
+                post.date,
+                post.title.as_deref().unwrap_or_default()
+            );
+            let message = AnswerBuilder::default()
+                .text(format!(
+                    "😱😱😱 Il papi ha appena sganciato una nuova perla su instagram: {} 💣\n👉 {}",
+                    post.title.as_deref().unwrap_or_default(),
+                    post.url
+                ))
+                .sticker(Stickers::luna_e_stelle())
+                .finalize();
+            for chat in Self::subscribed_chats().await?.iter() {
+                debug!("sending new post notify to {}", chat);
+                if let Err(err) = message.clone().send(&bot, *chat).await {
+                    error!("failed to send scheduled aphorism to {}: {}", chat, err);
+                }
+            }
+            redis_client.set_last_instagram_update(date).await?;
         }
         Ok(())
     }

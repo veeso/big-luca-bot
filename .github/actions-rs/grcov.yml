@@ -7,4 +7,5 @@ ignore:
   - "C:/*"
   - "../*"
   - "src/big_luca/*"
+  - "src/rsshub/*"
   - src/main.rs

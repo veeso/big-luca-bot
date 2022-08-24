@@ -9,6 +9,7 @@ mod commands;
 mod config;
 mod redis;
 mod repository;
+mod rsshub;
 mod stickers;
 mod youtube;
 

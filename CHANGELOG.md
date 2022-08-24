@@ -15,6 +15,7 @@
 Released on 24/08/2022
 
 - Persist fetched times to redis
+- Get latest instagram post via rsshub (use picuki)
 
 ## 0.2.2
 
