@@ -17,6 +17,8 @@ pub enum Command {
     BigKatanga,
     #[command(description = "disattiva l'invio dei messaggi automatici del papi")]
     BigPezzente,
+    #[command(description = "visualizza l'ultimo post su instagram del papi")]
+    BigSocial,
     #[command(description = "vai al sito del Papi")]
     BigSito,
     #[command(description = "visualizza l'ultimo video del Papi")]

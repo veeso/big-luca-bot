@@ -102,6 +102,10 @@ big-luca-bot is a Telegram bot to get the best aphorisms said by Big Luca and to
 
     This commands will return the OFFICIAL PAPI'S WEBSITE
 
+- `/bigsocial`
+
+    This commands will return the latest post from the papi's instagram account
+
 - `/bigvideo`
 
     This command will display the latest video from "Il Papi"

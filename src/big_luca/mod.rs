@@ -99,6 +99,7 @@ impl BigLuca {
             Command::BigNews => Self::get_latest_videos().await,
             Command::BigPerla => Self::aphorism(),
             Command::BigPezzente => Self::unsubscribe_from_automatizer(&message.chat.id).await,
+            Command::BigSocial => Self::get_latest_instagram_post().await,
             Command::BigSito => Self::big_luca_website(),
             Command::BigVideo => Self::get_latest_video().await,
         };
@@ -141,6 +142,19 @@ impl BigLuca {
                 "😱 {} 👉 {}",
                 video.title.unwrap_or_default(),
                 video.url
+            )),
+            Err(err) => Self::error(err),
+        }
+    }
+
+    /// Get latest instagram post
+    async fn get_latest_instagram_post() -> Answer {
+        match rsshub::RssHubClient::get_latest_post().await {
+            Ok(post) => Answer::simple_text(format!(
+                "😱 {}\n{} 👉 {}",
+                post.title.unwrap_or_default(),
+                post.summary,
+                post.url
             )),
             Err(err) => Self::error(err),
         }
