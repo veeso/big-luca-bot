@@ -8,15 +8,15 @@ use chrono::{DateTime, Utc};
 use feed_rs::model::{Entry as RssEntry, Feed as RssFeed};
 use std::slice::Iter;
 
-/// Contains, for a feed source, the list of videos fetched from remote
+/// Contains, for a feed source, the list of entries fetched from remote
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Feed {
-    pub(crate) videos: Vec<Video>,
+    pub(crate) entries: Vec<Entry>,
 }
 
 /// identifies a single article in the feed
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Video {
+pub struct Entry {
     pub title: Option<String>,
     pub authors: Vec<String>,
     pub summary: String,
@@ -25,9 +25,9 @@ pub struct Video {
 }
 
 impl Feed {
-    /// Get an iterator over videos
-    pub fn videos(&self) -> Iter<'_, Video> {
-        self.videos.iter()
+    /// Get an iterator over entries
+    pub fn entries(&self) -> Iter<'_, Entry> {
+        self.entries.iter()
     }
 }
 
@@ -36,12 +36,12 @@ impl Feed {
 impl From<RssFeed> for Feed {
     fn from(feed: RssFeed) -> Self {
         Self {
-            videos: feed.entries.into_iter().map(Video::from).collect(),
+            entries: feed.entries.into_iter().map(Entry::from).collect(),
         }
     }
 }
 
-impl From<RssEntry> for Video {
+impl From<RssEntry> for Entry {
     fn from(entry: RssEntry) -> Self {
         let content_or_summary = content_or_summary(&entry);
         Self {
@@ -91,15 +91,15 @@ mod test {
     #[test]
     fn should_get_feed_attributes() {
         let feed = Feed {
-            videos: Vec::default(),
+            entries: Vec::default(),
         };
-        assert!(feed.videos.is_empty());
+        assert!(feed.entries.is_empty());
     }
 
     #[test]
     fn should_convert_entry_into_article() {
         let entry = RssEntry::default();
-        let article = Video::from(entry);
+        let article = Entry::from(entry);
         assert!(article.authors.is_empty());
         assert_eq!(article.date, None);
         assert_eq!(article.summary, String::new());
@@ -130,6 +130,6 @@ mod test {
             entries: vec![RssEntry::default(), RssEntry::default()],
         };
         let feed = Feed::from(feed);
-        assert_eq!(feed.videos.len(), 2);
+        assert_eq!(feed.entries.len(), 2);
     }
 }

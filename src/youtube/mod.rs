@@ -6,10 +6,9 @@ use feed_rs::parser as feed_parser;
 use std::io::Cursor;
 
 mod errors;
-mod feed;
 
+use crate::feed::Feed;
 pub use errors::{YoutubeError, YoutubeResult};
-pub use feed::{Feed, Video};
 
 /// Youtube feed client
 pub struct YoutubeClient {
@@ -71,6 +70,6 @@ mod test {
     async fn should_parse_feed() {
         let client = YoutubeClient::new("UCTpU7OQg9QVsqayEYXTL1LQ");
         let feed = client.fetch().await.unwrap();
-        assert!(feed.videos().next().is_some());
+        assert!(feed.entries().next().is_some());
     }
 }

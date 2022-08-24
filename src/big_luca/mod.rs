@@ -117,7 +117,7 @@ impl BigLuca {
         match youtube::Youtube::get_latest_videos().await {
             Ok(feed) => {
                 let mut message = String::new();
-                for video in feed.videos() {
+                for video in feed.entries() {
                     message.push_str(
                         format!(
                             "• {} 👉 {}\n",

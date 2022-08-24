@@ -9,6 +9,7 @@ extern crate serde;
 extern crate tracing;
 
 mod big_luca;
+mod feed;
 mod redis;
 mod repository;
 mod utils;
