@@ -88,6 +88,15 @@ const PAPI_APHORISM: &[&str] = &[
     "La vostra vita è una merda, perché siete circondati dalle persone tossiche. Dovete isolarvi.",
     "Le notifiche sono il MALE assoluto.",
     "Se siete delle persone ambiziose e volete di più dalla vita dovete ISOLARVI.",
+    r#"Nota del papi:
+Signori davvero...
+Chiunque abbia un infobusiness, venda videocorsi, consulenza o servizi done-for-you...
+NON può fare a meno di queste informazioni.
+E lo confermano i risultati e le testimonianze degli studenti che grazie alle stesse sono stati in grado di RADDOPPIARE, TRIPLICARE o addirittura DECUPLICARE i propri profitti netti nel giro di pochi mesi.
+Inoltre, lo dico chiaro e tondo...
+
+CHIUNQUE non abbia accesso a queste informazioni nel 2022 semplicemente ha un HANDICAP...
+Ed è destinato a farsi ECLISSARE dai propri competitor."#,
 ];
 
 #[cfg(test)]
