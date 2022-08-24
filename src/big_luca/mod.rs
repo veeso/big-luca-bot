@@ -7,6 +7,7 @@ mod aphorism;
 mod automatize;
 mod commands;
 mod config;
+mod redis;
 mod repository;
 mod stickers;
 mod youtube;

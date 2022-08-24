@@ -2,22 +2,19 @@
 //!
 //! A module to automatize messages
 
+use crate::big_luca::redis::RedisRepository;
+
 use super::repository::Repository;
 use super::youtube::Youtube;
 use super::{AnswerBuilder, Aphorism, Stickers};
 
-use chrono::{DateTime, Local};
-use futures::lock::Mutex;
+use chrono::Utc;
 use teloxide::prelude::*;
 use teloxide::types::ChatId;
 use thiserror::Error;
 use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
 
 type AutomatizerResult<T> = Result<T, AutomatizerError>;
-
-lazy_static! {
-    static ref LAST_VIDEO_PUBLISHED_DATE: Mutex<DateTime<Local>> = Mutex::new(DateTime::default());
-}
 
 /// Automatizer error
 #[derive(Debug, Error)]
@@ -139,35 +136,37 @@ impl Automatizer {
                 anyhow::bail!("failed to check latest video: {}", err)
             }
         };
-        if let Some(date) = video.date {
-            debug!(
-                "last time I checked big-luca videos, big-luca video had date {}; latest has {}",
-                *LAST_VIDEO_PUBLISHED_DATE.lock().await,
-                date
+
+        // get last video pub date
+        let mut redis_client = RedisRepository::connect()?;
+        let last_video_pubdate = redis_client.get_last_video_pubdate().await?;
+        debug!(
+            "last time I checked big-luca videos, big-luca video had date {:?}; latest has {:?}",
+            last_video_pubdate, video.date
+        );
+        let date = video.date.unwrap_or(Utc::now());
+        if last_video_pubdate.map(|x| x < date).unwrap_or(false) {
+            let bot = Bot::from_env().auto_send();
+            info!(
+                "Big luca published a new video ({:?}): {}",
+                video.date,
+                video.title.as_deref().unwrap_or_default()
             );
-            if *LAST_VIDEO_PUBLISHED_DATE.lock().await < date {
-                let bot = Bot::from_env().auto_send();
-                info!(
-                    "Big luca published a new video ({}): {}",
-                    date,
-                    video.title.as_deref().unwrap_or_default()
-                );
-                let message = AnswerBuilder::default()
-                    .text(format!(
-                        "😱😱😱 Il papi ha appena sganciato un nuovo video: {} 💣\n👉 {}",
-                        video.title.as_deref().unwrap_or_default(),
-                        video.url
-                    ))
-                    .sticker(Stickers::luna_e_stelle())
-                    .finalize();
-                for chat in Self::subscribed_chats().await?.iter() {
-                    debug!("sending new video notify to {}", chat);
-                    if let Err(err) = message.clone().send(&bot, *chat).await {
-                        error!("failed to send scheduled aphorism to {}: {}", chat, err);
-                    }
+            let message = AnswerBuilder::default()
+                .text(format!(
+                    "😱😱😱 Il papi ha appena sganciato un nuovo video: {} 💣\n👉 {}",
+                    video.title.as_deref().unwrap_or_default(),
+                    video.url
+                ))
+                .sticker(Stickers::luna_e_stelle())
+                .finalize();
+            for chat in Self::subscribed_chats().await?.iter() {
+                debug!("sending new video notify to {}", chat);
+                if let Err(err) = message.clone().send(&bot, *chat).await {
+                    error!("failed to send scheduled aphorism to {}: {}", chat, err);
                 }
-                *LAST_VIDEO_PUBLISHED_DATE.lock().await = date;
             }
+            redis_client.set_last_video_pubdate(date).await?;
         }
         Ok(())
     }

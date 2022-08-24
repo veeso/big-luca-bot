@@ -4,7 +4,7 @@
 
 use crate::utils::str as str_helpers;
 
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Utc};
 use feed_rs::model::{Entry as RssEntry, Feed as RssFeed};
 use std::slice::Iter;
 
@@ -21,7 +21,7 @@ pub struct Video {
     pub authors: Vec<String>,
     pub summary: String,
     pub url: String,
-    pub date: Option<DateTime<Local>>,
+    pub date: Option<DateTime<Utc>>,
 }
 
 impl Feed {
@@ -55,10 +55,7 @@ impl From<RssEntry> for Video {
                 .get(0)
                 .map(|x| x.href.clone())
                 .unwrap_or(entry.id),
-            date: entry
-                .published
-                .or(entry.updated)
-                .map(DateTime::<Local>::from),
+            date: entry.published.or(entry.updated).map(DateTime::<Utc>::from),
         }
     }
 }

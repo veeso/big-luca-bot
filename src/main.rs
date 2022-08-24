@@ -11,6 +11,7 @@ extern crate serde;
 extern crate tracing;
 
 mod big_luca;
+mod redis;
 mod repository;
 mod utils;
 mod youtube;
