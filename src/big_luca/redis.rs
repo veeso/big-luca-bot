@@ -32,12 +32,11 @@ impl RedisRepository {
             .await
             .map_err(|e| anyhow::anyhow!("failed to get last video pubdate: {}", e))
             .map(|x| {
-                x.map(|x| {
+                x.and_then(|x| {
                     DateTime::parse_from_rfc3339(&x)
                         .ok()
                         .map(|x| DateTime::from_utc(x.naive_utc(), Utc))
                 })
-                .flatten()
             })
     }
 
