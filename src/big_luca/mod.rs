@@ -73,7 +73,6 @@ impl BigLuca {
         // start bot
         teloxide::commands_repl_with_listener(self.bot, Self::answer, listener, Command::ty())
             .await;
-        Self::katanga_reminder().await;
         Ok(())
     }
 
@@ -81,7 +80,6 @@ impl BigLuca {
     async fn run_simple(self) -> anyhow::Result<()> {
         info!("running bot without webhooks");
         teloxide::commands_repl(self.bot, Self::answer, Command::ty()).await;
-        Self::katanga_reminder().await;
         Ok(())
     }
 
@@ -193,29 +191,6 @@ impl BigLuca {
                 .sticker(Stickers::grrr())
                 .finalize(),
             Err(err) => Self::error(err),
-        }
-    }
-
-    /// Send a reminder to all the subscribed chats, to remind them to resubscribe
-    async fn katanga_reminder() {
-        info!("bot is shutting down; sending katanga reminder");
-        let bot = Bot::from_env().auto_send();
-        let message = AnswerBuilder::default()
-            .text("il Papi bot si sta riavviando 😱😨, quando torna dal volo col privatino ti avvisa 😎")
-            .sticker(Stickers::oh_no())
-            .finalize();
-        let chats = match automatize::Automatizer::subscribed_chats().await {
-            Ok(c) => c,
-            Err(err) => {
-                error!("failed to get chats: {}", err);
-                return;
-            }
-        };
-        for chat in chats.iter() {
-            debug!("sending katanga reminder to {}", chat);
-            if let Err(err) = message.clone().send(&bot, *chat).await {
-                error!("failed to katang reminder to {}: {}", chat, err);
-            }
         }
     }
 

@@ -39,9 +39,6 @@ impl Automatizer {
     /// Start automatizer
     pub async fn start() -> AutomatizerResult<Self> {
         debug!("starting automatizer");
-        if let Err(err) = Self::notify_started().await {
-            error!("failed to send start notify: {}", err);
-        }
         Ok(Self {
             scheduler: Self::setup_cron_scheduler().await?,
         })
@@ -220,21 +217,6 @@ impl Automatizer {
                 }
             }
             redis_client.set_last_instagram_update(date).await?;
-        }
-        Ok(())
-    }
-
-    pub async fn notify_started() -> anyhow::Result<()> {
-        let bot = Bot::from_env().auto_send();
-        let message = AnswerBuilder::default()
-            .text("😱😱😱 Il papi è tornato online 💣😎".to_string())
-            .sticker(Stickers::got_it())
-            .finalize();
-        for chat in Self::subscribed_chats().await?.iter() {
-            debug!("sending new video notify to {}", chat);
-            if let Err(err) = message.clone().send(&bot, *chat).await {
-                error!("failed to send start notify to {}: {}", chat, err);
-            }
         }
         Ok(())
     }
