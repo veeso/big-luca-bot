@@ -1,6 +1,7 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.3.0](#030)
   - [0.2.2](#022)
   - [0.2.1](#021)
   - [0.2.0](#020)
@@ -8,6 +9,12 @@
   - [0.1.0](#010)
 
 ---
+
+## 0.3.0
+
+Released on 24/08/2022
+
+- Persist fetched times to redis
 
 ## 0.2.2
 

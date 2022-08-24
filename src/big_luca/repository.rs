@@ -6,6 +6,8 @@ use crate::repository::{chat::Chat, SqliteDb};
 
 use teloxide::types::ChatId;
 
+use super::Config;
+
 pub struct Repository {
     db: SqliteDb,
 }
@@ -13,10 +15,10 @@ pub struct Repository {
 impl Repository {
     /// Connect to the database
     pub async fn connect() -> anyhow::Result<Self> {
-        let url = std::env::var("DATABASE_URL")
-            .map_err(|_| anyhow::anyhow!("DATABASE_URL; repository is not available"))?;
+        let config = Config::try_from_env()
+            .map_err(|_| anyhow::anyhow!("DATABASE_URL is not SET; repository is not available"))?;
         Ok(Self {
-            db: SqliteDb::connect(&url)
+            db: SqliteDb::connect(&config.database_url)
                 .await
                 .map_err(|e| anyhow::anyhow!("failed to connect to the database: {}", e))?,
         })

@@ -6,6 +6,7 @@ mod answer;
 mod aphorism;
 mod automatize;
 mod commands;
+mod config;
 mod repository;
 mod stickers;
 mod youtube;
@@ -17,6 +18,7 @@ use answer::{Answer, AnswerBuilder};
 use aphorism::Aphorism;
 use automatize::Automatizer;
 use commands::Command;
+pub use config::Config;
 use once_cell::sync::OnceCell;
 use stickers::Stickers;
 
@@ -30,8 +32,9 @@ pub struct BigLuca {
 impl BigLuca {
     /// Initialize big luca
     pub async fn init() -> anyhow::Result<Self> {
-        if std::env::var("TELOXIDE_TOKEN").is_err() {
-            anyhow::bail!("TELOXIDE_TOKEN is NOT set. You must set this variable in the environment with your bot token API")
+        // parse configuration
+        if let Err(err) = Config::try_from_env() {
+            return Err(err);
         }
         let automatizer = Automatizer::start()
             .await
