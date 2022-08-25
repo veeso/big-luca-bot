@@ -153,7 +153,7 @@ impl Automatizer {
             last_video_pubdate, video.date
         );
         let date = video.date.unwrap_or_else(Utc::now);
-        if last_video_pubdate.map(|x| x < date).unwrap_or(false) {
+        if last_video_pubdate.map(|x| x < date).unwrap_or(true) {
             let bot = Bot::from_env().auto_send();
             info!(
                 "Big luca published a new video ({:?}): {}",
@@ -195,7 +195,7 @@ impl Automatizer {
             last_post_pubdate, post.date
         );
         let date = post.date.unwrap_or_else(Utc::now);
-        if last_post_pubdate.map(|x| x < date).unwrap_or(false) {
+        if last_post_pubdate.map(|x| x < date).unwrap_or(true) {
             let bot = Bot::from_env().auto_send();
             info!(
                 "Big luca published a ig post ({:?}): {}",
