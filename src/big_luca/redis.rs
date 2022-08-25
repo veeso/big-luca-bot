@@ -21,7 +21,7 @@ impl RedisRepository {
         let config = Config::try_from_env()
             .map_err(|_| anyhow::anyhow!("REDIS_URL is not SET; repository is not available"))?;
         Ok(Self {
-            redis: RedisClient::connect(&config.database_url)
+            redis: RedisClient::connect(&config.redis_url)
                 .map_err(|e| anyhow::anyhow!("failed to connect to redis: {}", e))?,
         })
     }
