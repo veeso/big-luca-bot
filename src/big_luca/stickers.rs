@@ -87,6 +87,42 @@ impl Stickers {
         )
     }
 
+    pub fn shock() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXeuVjCLj8QFEenMC7IzLd1o6FLk5yNwACVA0AAlulSVAzJC66LKV1EikE",
+        )
+    }
+
+    pub fn wtf() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXeutjCLkDhY7t5KV6GkYdw9YYAefsUgAC9hIAAiVTSFCzgU9v4oYpjykE",
+        )
+    }
+
+    pub fn thinking2() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXeuljCLkBVXJPIh_QzsDTwpLmBEcMVgACtw4AAlhUQFC4LAds8GbTWCkE",
+        )
+    }
+
+    pub fn like() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXeuFjCLj4zR8sXoOnKtvXLI3yxEc9ugACPQ4AAu4IQFC27Rt-CssQtCkE",
+        )
+    }
+
+    pub fn pointing_down() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXeuNjCLj6rTNxR-uBaVQsRHNKZHd7cQACQQ0AAsFeQVBdgJmxyHMScSkE",
+        )
+    }
+
+    pub fn shrug() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXeudjCLj-lDwAAawLmNyJ5WKNJ49Jl0IAAjIMAAIipkhQCYimCOKXSzgpBA",
+        )
+    }
+
     pub fn random() -> InputFile {
         let mut rng = rand::thread_rng();
         STICKERS[rng.gen_range(0..STICKERS.len())]()
@@ -107,4 +143,10 @@ const STICKERS: &[fn() -> InputFile] = &[
     Stickers::surprised,
     Stickers::thinking,
     Stickers::thinking_seated,
+    Stickers::wtf,
+    Stickers::like,
+    Stickers::thinking2,
+    Stickers::pointing_down,
+    Stickers::shock,
+    Stickers::shrug,
 ];
