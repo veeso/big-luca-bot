@@ -172,7 +172,7 @@ impl Automatizer {
                     video.title.as_deref().unwrap_or_default(),
                     video.url
                 ))
-                .sticker(Stickers::luna_e_stelle())
+                .sticker(Stickers::random())
                 .finalize();
             for chat in Self::subscribed_chats().await?.iter() {
                 debug!("sending new video notify to {}", chat);
@@ -221,7 +221,7 @@ impl Automatizer {
                     post.title.as_deref().unwrap_or_default(),
                     post.url
                 ))
-                .sticker(Stickers::luna_e_stelle())
+                .sticker(Stickers::random())
                 .finalize();
             for chat in Self::subscribed_chats().await?.iter() {
                 debug!("sending new post notify to {}", chat);
