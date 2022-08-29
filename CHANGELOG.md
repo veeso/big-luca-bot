@@ -16,12 +16,11 @@
 
 ## 0.3.4
 
-Released on ??
-
-TODO:
+Released on 29/08/2022
 
 - Implemented `/start` command
 - New `/big-release` command
+- New stickers
 
 ## 0.3.3
 

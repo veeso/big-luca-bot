@@ -92,16 +92,38 @@ impl BigLuca {
         debug!("got command {:?}", command);
         let answer = match command {
             Command::Help => Answer::simple_text(Command::descriptions()),
+            Command::Start => Self::start(),
             Command::BigCorsi => Self::active_courses(),
             Command::BigKatanga => Self::subscribe_to_automatizer(&message.chat.id).await,
             Command::BigNews => Self::get_latest_videos().await,
             Command::BigPerla => Self::aphorism(),
             Command::BigPezzente => Self::unsubscribe_from_automatizer(&message.chat.id).await,
+            Command::BigRelease => Self::get_release(),
             Command::BigSocial => Self::get_latest_instagram_post().await,
             Command::BigSito => Self::big_luca_website(),
             Command::BigVideo => Self::get_latest_video().await,
         };
         answer.send(&bot, message.chat.id).await
+    }
+
+    fn start() -> Answer {
+        AnswerBuilder::default()
+            .text("Chi è Big Luca? Genio indiscusso dell'Online Marketing. Dopo aver macinato milioni nel mercato americano (il più agguerrito e competitivo al mondo) con guadagni superiori ai 100.000 dollari NETTI al mese a soli 25 anni, decise di approdare nel mercato europeo affermandosi subito come massima autorità dell'Online Marketing.Tanto che nel 2018 fu selezionato da Dan Kennedy in persona per prendere parte al suo esclusivo e leggendario Titanium Mastermind composto solo dai 16 migliori Marketer al mondo (con guadagni dimostrati superiori al milione di euro).")
+            .text(r#"Definito come il “Creatore di Milionari” Negli anni, l'impatto che Big Luca ha avuto su diverse persone è stato straordinario e fuori dal comune.
+ Dozzine di imprenditori partiti da zero, appartenenti alle nicchie più disparate, hanno creato realtà multi-milionarie grazie ai suoi corsi e alle sue consulenze private.           
+ Ed in tanti casi solo dopo una singola consulenza sono riusciti a decuplicare i propri profitti.
+D'altronde, nonostante i costi delle sue consulenze diventino sempre più proibitivi, ogni mese imprenditori di ogni nicchia ne fanno richiesta.
+Le persone fanno letteralmente la fila e viaggiano anche per 10.000 km per ricevere le sue consulenze private.
+La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione riescono ad accedere direttamente al suo supporto one-to-one."#)
+            .text("Allora? Sei pronto a diventare un allievo del Papi? Per cominciare entra in katanga con /bigkatanga per avere tutti gli aggiornamenti del Big o vedi tutti i comandi con /help")
+            .finalize()
+    }
+
+    fn get_release() -> Answer {
+        Answer::simple_text(format!(
+            "big-luca-bot {}. Sviluppato da @veeso97. Sostieni il mio progetto su Ko-Fi https://ko-fi.com/veeso",
+            env!("CARGO_PKG_VERSION")
+        ))
     }
 
     /// Send a random aphorism

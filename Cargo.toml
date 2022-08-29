@@ -10,7 +10,7 @@ license = "Unlicense"
 name = "big-luca-bot"
 readme = "README.md"
 repository = "https://github.com/veeso/big-luca-bot"
-version = "0.3.3"
+version = "0.3.4"
 
 [[bin]]
 name = "big-luca-bot"

@@ -17,6 +17,8 @@ pub enum Command {
     BigKatanga,
     #[command(description = "disattiva l'invio dei messaggi automatici del papi")]
     BigPezzente,
+    #[command(description = "visualizza la versione attuale del big-luca-bot")]
+    BigRelease,
     #[command(description = "visualizza l'ultimo post su instagram del papi")]
     BigSocial,
     #[command(description = "vai al sito del Papi")]
@@ -25,4 +27,6 @@ pub enum Command {
     BigVideo,
     #[command(description = "visualizza l'aiuto")]
     Help,
+    #[command(description = "inizializza bot")]
+    Start,
 }

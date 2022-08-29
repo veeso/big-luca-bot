@@ -123,6 +123,22 @@ impl Stickers {
         )
     }
 
+    pub fn double_pointing_down() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXkyRjDNkeidUyEOw3YR-z_cfi0RFyoQACjAwAAhBYYFCxYqFW11Pb2SkE",
+        )
+    }
+
+    pub fn standing() -> InputFile {
+        InputFile::file_id("CAACAgQAAxkBAAEXkydjDNkgwxlYYQozvHLBh4PS7XQKiAACkhUAAjNTaVDLs5YJ")
+    }
+
+    pub fn smiling() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXkypjDNkhodSIonwEWYfP8vbGl_zuHgACuRIAAhFXaFAP4JJlGloLrCkE",
+        )
+    }
+
     pub fn random() -> InputFile {
         let mut rng = rand::thread_rng();
         STICKERS[rng.gen_range(0..STICKERS.len())]()
@@ -131,22 +147,25 @@ impl Stickers {
 
 const STICKERS: &[fn() -> InputFile] = &[
     Stickers::despair,
+    Stickers::double_pointing_down,
     Stickers::face,
     Stickers::fiero,
     Stickers::got_it,
     Stickers::grrr,
     Stickers::i_want_you,
+    Stickers::like,
     Stickers::luna_e_stelle,
     Stickers::mildly_furious,
     Stickers::oh_no,
     Stickers::omg,
-    Stickers::surprised,
-    Stickers::thinking,
-    Stickers::thinking_seated,
-    Stickers::wtf,
-    Stickers::like,
-    Stickers::thinking2,
     Stickers::pointing_down,
     Stickers::shock,
     Stickers::shrug,
+    Stickers::smiling,
+    Stickers::standing,
+    Stickers::surprised,
+    Stickers::thinking_seated,
+    Stickers::thinking,
+    Stickers::thinking2,
+    Stickers::wtf,
 ];
