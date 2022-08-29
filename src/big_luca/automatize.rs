@@ -138,22 +138,28 @@ impl Automatizer {
 
     /// Fetch latest video job
     async fn fetch_latest_video() -> anyhow::Result<()> {
-        let video = match Youtube::get_latest_video().await {
-            Ok(v) => v,
+        // get last video pub date
+        let mut redis_client = RedisRepository::connect()?;
+        let last_video_pubdate = redis_client
+            .get_last_video_pubdate()
+            .await?
+            .unwrap_or_else(Utc::now);
+        let video = match Youtube::get_oldest_unseen_video(last_video_pubdate).await {
+            Ok(Some(v)) => v,
+            Ok(None) => {
+                debug!("there's no new video to show");
+                return Ok(());
+            }
             Err(err) => {
                 anyhow::bail!("failed to check latest video: {}", err)
             }
         };
-
-        // get last video pub date
-        let mut redis_client = RedisRepository::connect()?;
-        let last_video_pubdate = redis_client.get_last_video_pubdate().await?;
         debug!(
             "last time I checked big-luca videos, big-luca video had date {:?}; latest has {:?}",
             last_video_pubdate, video.date
         );
         let date = video.date.unwrap_or_else(Utc::now);
-        if last_video_pubdate.map(|x| x < date).unwrap_or(true) {
+        if last_video_pubdate < date {
             let bot = Bot::from_env().auto_send();
             info!(
                 "Big luca published a new video ({:?}): {}",
@@ -180,22 +186,29 @@ impl Automatizer {
     }
 
     async fn fetch_latest_instagram_post() -> anyhow::Result<()> {
-        let post = match RssHubClient::get_latest_post().await {
-            Ok(v) => v,
+        // get last video pub date
+        let mut redis_client = RedisRepository::connect()?;
+        let last_post_pubdate = redis_client
+            .get_last_instagram_update()
+            .await?
+            .unwrap_or_else(Utc::now);
+
+        let post = match RssHubClient::get_oldest_unseen_post(last_post_pubdate).await {
+            Ok(Some(v)) => v,
+            Ok(None) => {
+                debug!("There's no new post to see");
+                return Ok(());
+            }
             Err(err) => {
                 anyhow::bail!("failed to check latest ig post: {}", err)
             }
         };
-
-        // get last video pub date
-        let mut redis_client = RedisRepository::connect()?;
-        let last_post_pubdate = redis_client.get_last_instagram_update().await?;
         debug!(
             "last time I checked big-luca ig posts, big-luca ig post had date {:?}; latest has {:?}",
             last_post_pubdate, post.date
         );
         let date = post.date.unwrap_or_else(Utc::now);
-        if last_post_pubdate.map(|x| x < date).unwrap_or(true) {
+        if last_post_pubdate < date {
             let bot = Bot::from_env().auto_send();
             info!(
                 "Big luca published a ig post ({:?}): {}",

@@ -2,6 +2,8 @@
 //!
 //! This module exposes the function to fetch the youtube latest videos from big luca
 
+use chrono::{DateTime, Utc};
+
 use crate::feed::{Entry, Feed};
 use crate::youtube::YoutubeClient;
 
@@ -18,6 +20,22 @@ impl Youtube {
         } else {
             anyhow::bail!("Non ho trovato nessun video del Papi. Ma stiamo scherzando!?")
         }
+    }
+
+    /// Get oldest unseen post from instagram
+    pub async fn get_oldest_unseen_video(
+        last_video_pubdate: DateTime<Utc>,
+    ) -> anyhow::Result<Option<Entry>> {
+        let feed = Self::get_latest_videos().await?;
+        // sort by date
+        let mut entries: Vec<Entry> = feed.entries().cloned().collect();
+        entries.sort_by_key(|x| x.date);
+        for entry in entries.into_iter() {
+            if entry.date > Some(last_video_pubdate) {
+                return Ok(Some(entry));
+            }
+        }
+        Ok(None)
     }
 
     /// Get latest videos from big luca
