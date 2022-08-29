@@ -98,7 +98,21 @@ Inoltre, lo dico chiaro e tondo...
 CHIUNQUE non abbia accesso a queste informazioni nel 2022 semplicemente ha un HANDICAP...
 Ed è destinato a farsi ECLISSARE dai propri competitor."#,
     "Le persone normali non hanno obiettivi, non avendo obiettivi non possono sprecare il tempo.",
-    "Le persone vi stanno rovinando la vita."
+    "Le persone vi stanno rovinando la vita.",
+    "La povertà è una malattia mentale",
+    "È giusto lucrare su ogni opportunità.",
+    "Noleggiare i costi, acquisire i ricavi.",
+    "Ci sarà il link da qualche parte...",
+    "Dove c'è aggregazione c'è mediocrità.",
+    "Povero ma dignitoso, sta minchia.",
+    "Il papi sono IO.",
+    "Apprpinquatevi signori.",
+    "Non vogliono solo 5 minuti del vostro tempo, questi vogliono vedervi fallire.",
+    "Il sottobosco è il vero bosco.",
+    "Fare marketing non è 'i facebook ADS'",
+    "I soldi sono la libertà.",
+    "Le persone mentono e rubane se ne hanno la possibilitò.",
+    "La media è il popolume che il gira il mondo nutrendosi di banane."
 ];
 
 #[cfg(test)]

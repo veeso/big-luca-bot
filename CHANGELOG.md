@@ -1,6 +1,7 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.3.3](#033)
   - [0.3.2](#032)
   - [0.3.1](#031)
   - [0.3.0](#030)
@@ -11,6 +12,14 @@
   - [0.1.0](#010)
 
 ---
+
+## 0.3.3
+
+Released on 29/08/2022
+
+- Implemented `/start` command
+- New `/big-release` command
+- New aphorisms
 
 ## 0.3.2
 
