@@ -1,6 +1,7 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.3.4](#034)
   - [0.3.3](#033)
   - [0.3.2](#032)
   - [0.3.1](#031)
@@ -13,12 +14,19 @@
 
 ---
 
+## 0.3.4
+
+Released on ??
+
+TODO:
+
+- Implemented `/start` command
+- New `/big-release` command
+
 ## 0.3.3
 
 Released on 29/08/2022
 
-- Implemented `/start` command
-- New `/big-release` command
 - New aphorisms
 - Automatizer tasks: new behaviour for latest video/post
   - From now on, they won't show the LATEST video, but the latest UNSENT OLDEST video/post in the feed.
