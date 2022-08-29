@@ -97,7 +97,8 @@ Inoltre, lo dico chiaro e tondo...
 
 CHIUNQUE non abbia accesso a queste informazioni nel 2022 semplicemente ha un HANDICAP...
 Ed è destinato a farsi ECLISSARE dai propri competitor."#,
-    "Le persone normali non hanno obiettivi, non avendo obiettivi non possono sprecare il tempo."
+    "Le persone normali non hanno obiettivi, non avendo obiettivi non possono sprecare il tempo.",
+    "Le persone vi stanno rovinando la vita."
 ];
 
 #[cfg(test)]
