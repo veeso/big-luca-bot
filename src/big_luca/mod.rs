@@ -7,6 +7,7 @@ mod aphorism;
 mod automatize;
 mod commands;
 mod config;
+mod parameters;
 mod redis;
 mod repository;
 mod rsshub;
@@ -22,9 +23,11 @@ use automatize::Automatizer;
 use commands::Command;
 pub use config::Config;
 use once_cell::sync::OnceCell;
+pub use parameters::Parameters;
 use stickers::Stickers;
 
 pub static AUTOMATIZER: OnceCell<Automatizer> = OnceCell::new();
+pub static PARAMETERS: OnceCell<Parameters> = OnceCell::new();
 
 /// Big luca bot application
 pub struct BigLuca {
@@ -35,15 +38,21 @@ impl BigLuca {
     /// Initialize big luca
     pub async fn init() -> anyhow::Result<Self> {
         // parse configuration
+        let config = Config::try_from_env()?;
         if let Err(err) = Config::try_from_env() {
             return Err(err);
         }
         let automatizer = Automatizer::start()
             .await
             .map_err(|e| anyhow::anyhow!("failed to start automatizer: {}", e))?;
+        // read parameters
         if AUTOMATIZER.set(automatizer).is_err() {
             anyhow::bail!("failed to set automatizer");
         };
+        let parameters = Parameters::try_from_path(&config.parameters_path)?;
+        if PARAMETERS.set(parameters).is_err() {
+            anyhow::bail!("failed to set parameters");
+        }
         let bot = Bot::from_env().auto_send();
         Ok(Self { bot })
     }
@@ -121,7 +130,7 @@ La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione ri
 
     fn get_release() -> Answer {
         Answer::simple_text(format!(
-            "big-luca-bot {}. Sviluppato da @veeso97. Sostieni il mio progetto su Ko-Fi https://ko-fi.com/veeso",
+            "big-luca-bot {}. Sviluppato da @veeso97. Contribuisci al progetto su Github https://github.com/veeso/big-luca-bot. Sostieni il mio progetto su Ko-Fi https://ko-fi.com/veeso",
             env!("CARGO_PKG_VERSION")
         ))
     }
@@ -189,10 +198,11 @@ La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione ri
 
     /// Get latest active courses
     fn active_courses() -> Answer {
-        AnswerBuilder::default()
-        .text(
-            r#"È uscito il nuovo libro del Papi "Alzati (tardi) e lucra!", solo fino al 26 agosto 👉 https://bit.ly/alzatielucra"#,
-        ).finalize()
+        let mut builder = AnswerBuilder::default();
+        for course in PARAMETERS.get().unwrap().courses.iter() {
+            builder = builder.text(course);
+        }
+        builder.finalize()
     }
 
     /// Subscribe chat to the automatizer

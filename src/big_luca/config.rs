@@ -2,10 +2,13 @@
 //!
 //! big-luca-bot configuration
 
+use std::path::PathBuf;
+
 #[derive(Debug, Deserialize, Serialize)]
 /// Application config
 pub struct Config {
     pub database_url: String,
+    pub parameters_path: PathBuf,
     pub redis_url: String,
     pub rsshub_url: String,
     pub teloxide_token: String,

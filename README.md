@@ -7,7 +7,7 @@
 <p align="center">~ Le perle e le news del papi su Telegram in ogni momento ~</p>
 
 <p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
-<p align="center">Current version: 0.3.4 (29/08/2022)</p>
+<p align="center">Current version: 0.4.0 (31/08/2022)</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/Unlicense"
@@ -57,6 +57,7 @@
   - [Get started 🏁](#get-started-)
     - [Users](#users)
     - [Developers](#developers)
+      - [Configure parameters](#configure-parameters)
       - [Deploy with heroku](#deploy-with-heroku)
   - [Support the developer ☕](#support-the-developer-)
   - [Powered by 💪](#powered-by-)
@@ -133,10 +134,15 @@ If you want to develop on this bot, you can follow these simple steps:
 3. Get your API key
 4. Set your API key in your environment using the variable `TELOXIDE_TOKEN`
 5. Set your database path in your environment using the variable `DATABASE_URI`
-6. Set your rsshub url in your environment using the variable `RSSHUB_URL`
-7. Set your redis url in your environment using the variable `REDIS_URL`
-8. Touch the database file `touch $DATABASE_URI`
-9. Run the big-luca bot
+6. Set the path to `parameters.json` in your environment using the variable `PARAMETERS_PATH`
+7. Set your rsshub url in your environment using the variable `RSSHUB_URL`
+8. Set your redis url in your environment using the variable `REDIS_URL`
+9. Touch the database file `touch $DATABASE_URI`
+10. Run the big-luca bot
+
+#### Configure parameters
+
+You can add custom aphorisms and courses using the `parameters.json` file. Default file is located at `config/parameters.json` from the project root folder.
 
 #### Deploy with heroku
 

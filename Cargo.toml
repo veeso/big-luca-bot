@@ -27,6 +27,7 @@ rand = "0.8.5"
 redis = { version = "^0.21.6", features = ["tokio-comp"] }
 reqwest = { version = "^0.11", features = [ "rustls-tls" ] }
 serde = { version = "^1.0.0", features = [ "derive" ] }
+serde_json = "^1.0.0"
 sqlx = { version = "^0.6", features = [ "runtime-tokio-rustls", "sqlite" ] }
 teloxide = { version = "^0.10", features = ["macros", "auto-send", "rustls", "webhooks", "webhooks-axum"] }
 thiserror = "^1.0"

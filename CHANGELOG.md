@@ -1,6 +1,7 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.4.0](#040)
   - [0.3.4](#034)
   - [0.3.3](#033)
   - [0.3.2](#032)
@@ -13,6 +14,13 @@
   - [0.1.0](#010)
 
 ---
+
+## 0.4.0
+
+Released on 31/08/2022
+
+- From now on courses and aphorisms are read from `parameters.json`. RELOAD REQUIRES A BOT RESTART.
+- Added `PARAMETERS_PATH` to environment parameters
 
 ## 0.3.4
 
