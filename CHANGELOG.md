@@ -21,6 +21,7 @@ Released on 31/08/2022
 
 - From now on courses and aphorisms are read from `parameters.json`. RELOAD REQUIRES A BOT RESTART.
 - Added `PARAMETERS_PATH` to environment parameters
+- Repeating random aphorisms are now PREVENTED creating a shuffled sequence
 
 ## 0.3.4
 

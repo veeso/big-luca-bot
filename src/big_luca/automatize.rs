@@ -7,13 +7,17 @@ use crate::big_luca::redis::RedisRepository;
 use super::repository::Repository;
 use super::rsshub::RssHubClient;
 use super::youtube::Youtube;
-use super::{AnswerBuilder, Aphorism, Stickers};
+use super::{AnswerBuilder, AphorismJar, Parameters, Stickers};
 
 use chrono::Utc;
+use once_cell::sync::OnceCell;
 use teloxide::prelude::*;
 use teloxide::types::ChatId;
 use thiserror::Error;
 use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
+
+/// Aphorism jAR RESERVED TO THE AUTOMATIZER
+static APHORISMS_JAR: OnceCell<AphorismJar> = OnceCell::new();
 
 type AutomatizerResult<T> = Result<T, AutomatizerError>;
 
@@ -22,6 +26,8 @@ type AutomatizerResult<T> = Result<T, AutomatizerError>;
 pub enum AutomatizerError {
     #[error("scheduler error: {0}")]
     Scheduler(JobSchedulerError),
+    #[error("failed to setup aphorism jar")]
+    BadAphorisms,
 }
 
 impl From<JobSchedulerError> for AutomatizerError {
@@ -37,8 +43,14 @@ pub struct Automatizer {
 
 impl Automatizer {
     /// Start automatizer
-    pub async fn start() -> AutomatizerResult<Self> {
+    pub async fn start(params: &Parameters) -> AutomatizerResult<Self> {
         debug!("starting automatizer");
+        if APHORISMS_JAR
+            .set(AphorismJar::from(params.aphorisms.as_slice()))
+            .is_err()
+        {
+            return Err(AutomatizerError::BadAphorisms);
+        }
         Ok(Self {
             scheduler: Self::setup_cron_scheduler().await?,
         })
@@ -124,7 +136,7 @@ impl Automatizer {
     async fn send_perla() -> anyhow::Result<()> {
         let bot = Bot::from_env().auto_send();
         let message = AnswerBuilder::default()
-            .text(Aphorism::get_random())
+            .text(APHORISMS_JAR.get().unwrap().get_random())
             .sticker(Stickers::random())
             .finalize();
         for chat in Self::subscribed_chats().await?.iter() {

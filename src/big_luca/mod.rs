@@ -18,7 +18,7 @@ use teloxide::{dispatching::update_listeners::webhooks, prelude::*, utils::comma
 use url::Url;
 
 use answer::{Answer, AnswerBuilder};
-use aphorism::Aphorism;
+use aphorism::AphorismJar;
 use automatize::Automatizer;
 use commands::Command;
 pub use config::Config;
@@ -26,6 +26,7 @@ use once_cell::sync::OnceCell;
 pub use parameters::Parameters;
 use stickers::Stickers;
 
+static APHORISMS_JAR: OnceCell<AphorismJar> = OnceCell::new();
 pub static AUTOMATIZER: OnceCell<Automatizer> = OnceCell::new();
 pub static PARAMETERS: OnceCell<Parameters> = OnceCell::new();
 
@@ -42,14 +43,20 @@ impl BigLuca {
         if let Err(err) = Config::try_from_env() {
             return Err(err);
         }
-        let automatizer = Automatizer::start()
+        let parameters = Parameters::try_from_path(&config.parameters_path)?;
+        let automatizer = Automatizer::start(&parameters)
             .await
             .map_err(|e| anyhow::anyhow!("failed to start automatizer: {}", e))?;
         // read parameters
         if AUTOMATIZER.set(automatizer).is_err() {
             anyhow::bail!("failed to set automatizer");
         };
-        let parameters = Parameters::try_from_path(&config.parameters_path)?;
+        if APHORISMS_JAR
+            .set(AphorismJar::from(parameters.aphorisms.as_slice()))
+            .is_err()
+        {
+            anyhow::bail!("failed to set aphorisms");
+        }
         if PARAMETERS.set(parameters).is_err() {
             anyhow::bail!("failed to set parameters");
         }
@@ -138,7 +145,7 @@ La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione ri
     /// Send a random aphorism
     fn aphorism() -> Answer {
         AnswerBuilder::default()
-            .text(Aphorism::get_random())
+            .text(APHORISMS_JAR.get().unwrap().get_random())
             .sticker(Stickers::random())
             .finalize()
     }
