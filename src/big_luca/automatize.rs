@@ -75,7 +75,7 @@ impl Automatizer {
     /// Setup cron scheduler
     async fn setup_cron_scheduler() -> AutomatizerResult<JobScheduler> {
         let sched = JobScheduler::new().await?;
-        // daily aphorism job
+        // aphorism jobs
         let morning_aphorism_job = Job::new_async("0 0 6 * * *", |_, _| {
             Box::pin(async move {
                 info!("running morning_aphorism_job");
@@ -85,6 +85,15 @@ impl Automatizer {
             })
         })?;
         sched.add(morning_aphorism_job).await?;
+        let late_morning_aphorism_job = Job::new_async("0 30 9 * * *", |_, _| {
+            Box::pin(async move {
+                info!("running late_morning_aphorism_job");
+                if let Err(err) = Self::send_perla().await {
+                    error!("late_morning_aphorism_job failed: {}", err);
+                }
+            })
+        })?;
+        sched.add(late_morning_aphorism_job).await?;
         let afternoon_aphorism_job = Job::new_async("0 30 12 * * *", |_, _| {
             Box::pin(async move {
                 info!("running afternoon_aphorism_job");
@@ -94,6 +103,15 @@ impl Automatizer {
             })
         })?;
         sched.add(afternoon_aphorism_job).await?;
+        let late_afternoon_aphorism_job = Job::new_async("0 30 15 * * *", |_, _| {
+            Box::pin(async move {
+                info!("running late_afternoon_aphorism_job");
+                if let Err(err) = Self::send_perla().await {
+                    error!("late_afternoon_aphorism_job failed: {}", err);
+                }
+            })
+        })?;
+        sched.add(late_afternoon_aphorism_job).await?;
         // evening aphorism job
         let evening_aphorism_job = Job::new_async("0 30 17 * * *", |_, _| {
             Box::pin(async move {
@@ -104,6 +122,16 @@ impl Automatizer {
             })
         })?;
         sched.add(evening_aphorism_job).await?;
+        // night aphorism job
+        let night_aphorism_job = Job::new_async("0 50 20 * * *", |_, _| {
+            Box::pin(async move {
+                info!("running night_aphorism_job");
+                if let Err(err) = Self::send_perla().await {
+                    error!("night_aphorism_job failed: {}", err);
+                }
+            })
+        })?;
+        sched.add(night_aphorism_job).await?;
         // new video check
         let new_video_check_job = Job::new_async("0 30 * * * *", |_, _| {
             Box::pin(async move {
