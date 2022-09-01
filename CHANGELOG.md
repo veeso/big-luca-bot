@@ -1,6 +1,7 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.4.1](#041)
   - [0.4.0](#040)
   - [0.3.4](#034)
   - [0.3.3](#033)
@@ -14,6 +15,13 @@
   - [0.1.0](#010)
 
 ---
+
+## 0.4.1
+
+Released on 01/09/2022
+
+- New stickers
+- More aphorisms during the day
 
 ## 0.4.0
 

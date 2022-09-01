@@ -7,7 +7,6 @@ use teloxide::types::InputFile;
 
 pub struct Stickers;
 
-#[allow(dead_code)]
 impl Stickers {
     pub fn i_want_you() -> InputFile {
         InputFile::file_id(
@@ -139,6 +138,36 @@ impl Stickers {
         )
     }
 
+    pub fn seated() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXpARjD3R-PoAOMpfY_oQ3P0RnLYB9AAPfDQACBuKBUPqjneaTxA--KQQ",
+        )
+    }
+
+    pub fn conference() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXpAZjD3SADih-z-oEcAg38NDcdspUMwACqA0AAnY3gVAs5hA27uFFUikE",
+        )
+    }
+
+    pub fn christmas() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXqS5jEGXaFYb7ClHLonV12r6Ah0O4AQAC_A8AAlRlgVA10GBRJpErxCkE",
+        )
+    }
+
+    pub fn big_face() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXqTBjEGXcDj7JxnTywAELWoT6V3glfAACMw4AAmkviVAvqQmNvTJPwykE",
+        )
+    }
+
+    pub fn beach() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXqSxjEGXYh72H7O5O1DLL4CWtAAFGUEoAAgUOAALsBIlQZYthJA6wqy8pBA",
+        )
+    }
+
     pub fn random() -> InputFile {
         let mut rng = rand::thread_rng();
         STICKERS[rng.gen_range(0..STICKERS.len())]()
@@ -146,6 +175,10 @@ impl Stickers {
 }
 
 const STICKERS: &[fn() -> InputFile] = &[
+    Stickers::beach,
+    Stickers::big_face,
+    Stickers::christmas,
+    Stickers::conference,
     Stickers::despair,
     Stickers::double_pointing_down,
     Stickers::face,
@@ -159,6 +192,7 @@ const STICKERS: &[fn() -> InputFile] = &[
     Stickers::oh_no,
     Stickers::omg,
     Stickers::pointing_down,
+    Stickers::seated,
     Stickers::shock,
     Stickers::shrug,
     Stickers::smiling,
