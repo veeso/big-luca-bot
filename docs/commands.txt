@@ -1,0 +1,10 @@
+bigcorsi - visualizza gli attuali corsi disponibili del Papi
+bigkatanga - imposta il papi per inviarti i messaggi automatici
+bignews - visualizza gli ultimi video del Papi
+bigperla - il Papi ti lancia una perla
+bigpezzente - disattiva l'invio dei messaggi automatici del papi
+bigrelease - visualizza la versione attuale del big-luca-bot
+bigsito - vai al sito del Papi
+bigsocial - visualizza l'ultimo post su instagram del papi
+bigvideo - visualizza l'ultimo video del Papi
+help - visualizza l'aiuto
