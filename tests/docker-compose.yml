@@ -7,7 +7,7 @@ services:
         ports:
             - '6379:6379'
         volumes:
-            - redis-data:/data
+            - /tmp/redis:/data
 
     rsshub:
         image: diygod/rsshub
@@ -21,6 +21,3 @@ services:
             PUPPETEER_WS_ENDPOINT: 'ws://browserless:3000'  # marked
         depends_on:
             - redis
-
-volumes:
-    redis-data:

@@ -130,6 +130,7 @@ D'altronde, nonostante i costi delle sue consulenze diventino sempre più proibi
 Le persone fanno letteralmente la fila e viaggiano anche per 10.000 km per ricevere le sue consulenze private.
 La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione riescono ad accedere direttamente al suo supporto one-to-one."#)
             .text("Allora? Sei pronto a diventare un allievo del Papi? Per cominciare entra in katanga con /bigkatanga per avere tutti gli aggiornamenti del Big o vedi tutti i comandi con /help")
+            .sticker(Stickers::i_want_you())
             .finalize()
     }
 
@@ -215,7 +216,7 @@ La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione ri
         for course in PARAMETERS.get().unwrap().courses.iter() {
             builder = builder.text(course);
         }
-        builder.finalize()
+        builder.sticker(Stickers::lucro_time()).finalize()
     }
 
     /// Subscribe chat to the automatizer
@@ -223,7 +224,7 @@ La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione ri
         match AUTOMATIZER.get().unwrap().subscribe(chat_id).await {
             Ok(_) => AnswerBuilder::default()
             .text("sei ora iscritto alla piattaforma Katanga! 🚀🚀🚀 Da ora riceverai tutte le perle del papi e i suoi ultimi aggiornamenti automaticamente su questa chat! 😱")
-            .sticker(Stickers::got_it())
+            .sticker(Stickers::like())
             .finalize(),
             Err(err) => Self::error(err),
         }

@@ -168,6 +168,12 @@ impl Stickers {
         )
     }
 
+    pub fn lucro_time() -> InputFile {
+        InputFile::file_id(
+            "CAACAgQAAxkBAAEXxhpjFe4m19MfIFbKbQYTXrmcacvIzgACtAwAAibNiFDGiXMGXPYL3CkE",
+        )
+    }
+
     pub fn random() -> InputFile {
         let mut rng = rand::thread_rng();
         STICKERS[rng.gen_range(0..STICKERS.len())]()
@@ -187,6 +193,7 @@ const STICKERS: &[fn() -> InputFile] = &[
     Stickers::grrr,
     Stickers::i_want_you,
     Stickers::like,
+    Stickers::lucro_time,
     Stickers::luna_e_stelle,
     Stickers::mildly_furious,
     Stickers::oh_no,

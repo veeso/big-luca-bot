@@ -22,6 +22,8 @@
 Released on 05/09/2022
 
 - Restored picuki for social network, since instagram tries to block your account
+- Add new sticker
+- From now on each chat has a unique random sequence for aphorisms; aphorisms sequence is refreshed only when aphorisms change
 
 ## 0.4.1
 
