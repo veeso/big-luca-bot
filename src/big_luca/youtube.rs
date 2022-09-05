@@ -44,6 +44,6 @@ impl Youtube {
         client
             .fetch()
             .await
-            .map_err(|e| anyhow::anyhow!("Impossibile gli ultimi video del Papi: {}", e))
+            .map_err(|e| anyhow::anyhow!("Impossibile ottenere gli ultimi video del Papi: {}", e))
     }
 }

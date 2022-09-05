@@ -7,17 +7,14 @@ use crate::big_luca::redis::RedisRepository;
 use super::repository::Repository;
 use super::rsshub::RssHubClient;
 use super::youtube::Youtube;
-use super::{AnswerBuilder, AphorismJar, Parameters, Stickers};
+use super::{AnswerBuilder, AphorismJar, Stickers, PARAMETERS};
 
 use chrono::Utc;
-use once_cell::sync::OnceCell;
+use std::convert::TryFrom;
 use teloxide::prelude::*;
 use teloxide::types::ChatId;
 use thiserror::Error;
 use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
-
-/// Aphorism jAR RESERVED TO THE AUTOMATIZER
-static APHORISMS_JAR: OnceCell<AphorismJar> = OnceCell::new();
 
 type AutomatizerResult<T> = Result<T, AutomatizerError>;
 
@@ -26,8 +23,6 @@ type AutomatizerResult<T> = Result<T, AutomatizerError>;
 pub enum AutomatizerError {
     #[error("scheduler error: {0}")]
     Scheduler(JobSchedulerError),
-    #[error("failed to setup aphorism jar")]
-    BadAphorisms,
 }
 
 impl From<JobSchedulerError> for AutomatizerError {
@@ -43,14 +38,8 @@ pub struct Automatizer {
 
 impl Automatizer {
     /// Start automatizer
-    pub async fn start(params: &Parameters) -> AutomatizerResult<Self> {
+    pub async fn start() -> AutomatizerResult<Self> {
         debug!("starting automatizer");
-        if APHORISMS_JAR
-            .set(AphorismJar::from(params.aphorisms.as_slice()))
-            .is_err()
-        {
-            return Err(AutomatizerError::BadAphorisms);
-        }
         Ok(Self {
             scheduler: Self::setup_cron_scheduler().await?,
         })
@@ -162,13 +151,22 @@ impl Automatizer {
 
     /// Send perla
     async fn send_perla() -> anyhow::Result<()> {
+        let parameters = PARAMETERS.get().unwrap();
+        let mut aphorism_jar = AphorismJar::try_from(parameters.aphorisms.as_slice())?;
         let bot = Bot::from_env().auto_send();
-        let message = AnswerBuilder::default()
-            .text(APHORISMS_JAR.get().unwrap().get_random())
-            .sticker(Stickers::random())
-            .finalize();
         for chat in Self::subscribed_chats().await?.iter() {
             debug!("sending scheduled aphorism to {}", chat);
+            let aphorism = match aphorism_jar.get_next(chat).await {
+                Ok(a) => a,
+                Err(e) => {
+                    error!("failed to get aphorism for chat {}: {}", chat, e);
+                    continue;
+                }
+            };
+            let message = AnswerBuilder::default()
+                .text(aphorism)
+                .sticker(Stickers::random())
+                .finalize();
             if let Err(err) = message.clone().send(&bot, *chat).await {
                 error!("failed to send scheduled aphorism to {}: {}", chat, err);
             }

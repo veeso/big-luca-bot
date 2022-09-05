@@ -14,19 +14,19 @@ mod rsshub;
 mod stickers;
 mod youtube;
 
-use teloxide::{dispatching::update_listeners::webhooks, prelude::*, utils::command::BotCommands};
-use url::Url;
-
+pub use self::redis::RedisRepository;
 use answer::{Answer, AnswerBuilder};
 use aphorism::AphorismJar;
 use automatize::Automatizer;
 use commands::Command;
 pub use config::Config;
-use once_cell::sync::OnceCell;
 pub use parameters::Parameters;
 use stickers::Stickers;
 
-static APHORISMS_JAR: OnceCell<AphorismJar> = OnceCell::new();
+use once_cell::sync::OnceCell;
+use teloxide::{dispatching::update_listeners::webhooks, prelude::*, utils::command::BotCommands};
+use url::Url;
+
 pub static AUTOMATIZER: OnceCell<Automatizer> = OnceCell::new();
 pub static PARAMETERS: OnceCell<Parameters> = OnceCell::new();
 
@@ -39,27 +39,25 @@ impl BigLuca {
     /// Initialize big luca
     pub async fn init() -> anyhow::Result<Self> {
         // parse configuration
+        info!("reading configuration");
         let config = Config::try_from_env()?;
-        if let Err(err) = Config::try_from_env() {
-            return Err(err);
-        }
+        info!("reading parameters");
         let parameters = Parameters::try_from_path(&config.parameters_path)?;
-        let automatizer = Automatizer::start(&parameters)
-            .await
-            .map_err(|e| anyhow::anyhow!("failed to start automatizer: {}", e))?;
-        // read parameters
-        if AUTOMATIZER.set(automatizer).is_err() {
-            anyhow::bail!("failed to set automatizer");
-        };
-        if APHORISMS_JAR
-            .set(AphorismJar::from(parameters.aphorisms.as_slice()))
-            .is_err()
-        {
-            anyhow::bail!("failed to set aphorisms");
-        }
         if PARAMETERS.set(parameters).is_err() {
             anyhow::bail!("failed to set parameters");
         }
+        // sanitize aphorism jar
+        info!("sanitizing aphorism jar...");
+        AphorismJar::sanitize_aphorisms(PARAMETERS.get().unwrap().aphorisms.as_slice()).await?;
+        info!("aphorism jar sanitized");
+        info!("starting automatizer");
+        let automatizer = Automatizer::start()
+            .await
+            .map_err(|e| anyhow::anyhow!("failed to start automatizer: {}", e))?;
+        if AUTOMATIZER.set(automatizer).is_err() {
+            anyhow::bail!("failed to set automatizer");
+        };
+        info!("automatizer started; starting bot");
         let bot = Bot::from_env().auto_send();
         Ok(Self { bot })
     }
@@ -112,7 +110,7 @@ impl BigLuca {
             Command::BigCorsi => Self::active_courses(),
             Command::BigKatanga => Self::subscribe_to_automatizer(&message.chat.id).await,
             Command::BigNews => Self::get_latest_videos().await,
-            Command::BigPerla => Self::aphorism(),
+            Command::BigPerla => Self::aphorism(&message.chat.id).await,
             Command::BigPezzente => Self::unsubscribe_from_automatizer(&message.chat.id).await,
             Command::BigRelease => Self::get_release(),
             Command::BigSocial => Self::get_latest_instagram_post().await,
@@ -143,11 +141,19 @@ La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione ri
     }
 
     /// Send a random aphorism
-    fn aphorism() -> Answer {
-        AnswerBuilder::default()
-            .text(APHORISMS_JAR.get().unwrap().get_random())
-            .sticker(Stickers::random())
-            .finalize()
+    async fn aphorism(chat: &ChatId) -> Answer {
+        let mut aphorism_jar =
+            match AphorismJar::try_from(PARAMETERS.get().unwrap().aphorisms.as_slice()) {
+                Ok(jar) => jar,
+                Err(e) => return Self::error(e),
+            };
+        match aphorism_jar.get_next(chat).await {
+            Ok(aphorism) => AnswerBuilder::default()
+                .text(aphorism)
+                .sticker(Stickers::random())
+                .finalize(),
+            Err(e) => Self::error(e),
+        }
     }
 
     /// Get latest videos from papi
