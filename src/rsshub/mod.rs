@@ -24,8 +24,8 @@ impl RssHubClient {
     }
 
     /// Fetch youtube channel feed
-    pub async fn fetch_instagram(&self, account: &str) -> RssHubResult<Feed> {
-        let uri = format!("{}/instagram/user/{}", self.url, account);
+    pub async fn fetch_picuki(&self, account: &str) -> RssHubResult<Feed> {
+        let uri = format!("{}/picuki/profile/{}", self.url, account);
         let body = self.fetch_feed(&uri).await?;
         trace!("Got body {}", body);
         self.parse_feed(body)
@@ -49,5 +49,19 @@ impl RssHubClient {
         feed_parser::parse(reader)
             .map(Feed::from)
             .map_err(RssHubError::from)
+    }
+}
+
+#[cfg(test)]
+mod test {
+
+    #[cfg(feature = "test-services")]
+    use super::*;
+
+    #[tokio::test]
+    #[cfg(feature = "test-services")]
+    async fn should_get_instagram_posts() {
+        let client = RssHubClient::new("http://localhost:1200");
+        assert!(client.fetch_picuki("bigluca.marketing").await.is_ok());
     }
 }

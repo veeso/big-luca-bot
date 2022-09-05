@@ -10,7 +10,7 @@ license = "Unlicense"
 name = "big-luca-bot"
 readme = "README.md"
 repository = "https://github.com/veeso/big-luca-bot"
-version = "0.4.1"
+version = "0.5.0"
 
 [[bin]]
 name = "big-luca-bot"
@@ -40,3 +40,7 @@ url = "2.2.2"
 [dev-dependencies]
 pretty_assertions = "^1.2.1"
 tempfile = "^3.2.0"
+
+[features]
+default = []
+test-services = []

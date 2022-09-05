@@ -24,7 +24,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --no-fail-fast
+          args: --no-fail-fast --all-features
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy

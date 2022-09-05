@@ -46,7 +46,7 @@ impl RssHubClient {
         let config = Config::try_from_env()
             .map_err(|_| anyhow::anyhow!("RSSHUB_URL is not SET; repository is not available"))?;
         Client::new(config.rsshub_url)
-            .fetch_instagram(BIGLUCA_ACCOUNT_ID)
+            .fetch_picuki(BIGLUCA_ACCOUNT_ID)
             .await
             .map_err(|e| anyhow::anyhow!("failed to fetch big luca instagram account: {}", e))
     }

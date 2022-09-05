@@ -1,6 +1,7 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.5.0](#050)
   - [0.4.1](#041)
   - [0.4.0](#040)
   - [0.3.4](#034)
@@ -15,6 +16,12 @@
   - [0.1.0](#010)
 
 ---
+
+## 0.5.0
+
+Released on 05/09/2022
+
+- Restored picuki for social network, since instagram tries to block your account
 
 ## 0.4.1
 
