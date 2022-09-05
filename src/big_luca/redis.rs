@@ -143,7 +143,7 @@ impl RedisRepository {
         let mut sessions = Vec::with_capacity(keys.len());
         for key in keys {
             let mut key = key.replace(APHORISM_JAR, "");
-            key = key.replace(":", "");
+            key = key.replace(':', "");
             key = key.replace("hash", "");
             sessions.push(ChatId(key.parse()?));
         }
@@ -215,14 +215,14 @@ impl RedisRepository {
     }
 
     fn aphorism_jar_order_key(chat_id: &ChatId) -> String {
-        format!("{}:{}:order", APHORISM_JAR, chat_id.to_string())
+        format!("{}:{}:order", APHORISM_JAR, chat_id)
     }
 
     fn aphorism_jar_index_key(chat_id: &ChatId) -> String {
-        format!("{}:{}:index", APHORISM_JAR, chat_id.to_string())
+        format!("{}:{}:index", APHORISM_JAR, chat_id)
     }
 
     fn aphorism_jar_hash_key(chat_id: &ChatId) -> String {
-        format!("{}:{}:hash", APHORISM_JAR, chat_id.to_string())
+        format!("{}:{}:hash", APHORISM_JAR, chat_id)
     }
 }

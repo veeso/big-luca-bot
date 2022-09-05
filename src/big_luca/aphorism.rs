@@ -20,7 +20,7 @@ impl AphorismJar {
     /// Get next aphorism for this chat
     pub async fn get_next(&mut self, chat_id: &ChatId) -> anyhow::Result<&'_ str> {
         debug!("getting next aphorism for {}", chat_id);
-        let element = self.repository.get_aphorism_jar_element(&chat_id).await?;
+        let element = self.repository.get_aphorism_jar_element(chat_id).await?;
         if element.is_none() {
             debug!(
                 "could not find any session associated to {}; initializing a new session",
@@ -77,7 +77,7 @@ impl AphorismJar {
     fn aphorisms_hash(aphorisms: &[String]) -> String {
         let mut digest_ctx = Context::new(&SHA256);
         for aphorism in aphorisms.iter() {
-            digest_ctx.update(&aphorism.as_bytes());
+            digest_ctx.update(aphorism.as_bytes());
         }
         HEXLOWER.encode(digest_ctx.finish().as_ref())
     }
@@ -109,6 +109,6 @@ mod test {
     async fn should_get_random_aphorism() {
         let parameters = Parameters::try_from_path(Path::new("config/parameters.json")).unwrap();
         let mut aphorism = AphorismJar::try_from(parameters.aphorisms.as_slice()).unwrap();
-        assert!(!aphorism.get_next(&ChatId(1)).await.is_ok());
+        assert!(aphorism.get_next(&ChatId(1)).await.is_err());
     }
 }
