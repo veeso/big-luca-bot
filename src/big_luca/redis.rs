@@ -181,6 +181,17 @@ impl RedisRepository {
         self.set_aphorism_jar_index(chat_id, 0).await
     }
 
+    /// Delete aphorism jar associated to chat
+    pub async fn delete_aphorism_jar_session(&mut self, chat_id: &ChatId) -> anyhow::Result<()> {
+        let pattern = format!("{}:{}:*", APHORISM_JAR, chat_id);
+        debug!("deleting keys associated to chat {}", chat_id);
+        for key in self.redis.keys(&pattern).await? {
+            self.redis.delete(&key).await?;
+        }
+        info!("deleted aphorism jar session for chat {}", chat_id);
+        Ok(())
+    }
+
     /// Set aphorism jar hash
     async fn set_aphorism_jar_hash(&mut self, chat_id: &ChatId, hash: &str) -> anyhow::Result<()> {
         let hash_key = Self::aphorism_jar_hash_key(chat_id);

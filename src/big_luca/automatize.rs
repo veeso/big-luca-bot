@@ -57,6 +57,8 @@ impl Automatizer {
     pub async fn unsubscribe(&self, chat: &ChatId) -> anyhow::Result<()> {
         let repository = Repository::connect().await?;
         repository.delete_chat(*chat).await?;
+        let mut redis = RedisRepository::connect()?;
+        redis.delete_aphorism_jar_session(chat).await?;
         info!("unsubscribed {} from the automatizer", chat);
         Ok(())
     }
