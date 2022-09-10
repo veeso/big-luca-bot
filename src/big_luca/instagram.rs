@@ -19,8 +19,10 @@ impl InstagramService {
         debug!("creating instagram scraper");
         let mut scraper = InstagramScraper::default()
             .authenticate_with_login(config.instagram_username, config.instagram_password);
+        scraper.login().await?;
         let user_id = Self::get_user_id(&mut scraper).await?;
         let posts = Self::get_posts(&mut scraper, &user_id, 1).await?;
+        scraper.logout().await?;
         if let Some(post) = posts.get(0) {
             Ok(post.clone())
         } else {
@@ -36,8 +38,10 @@ impl InstagramService {
         debug!("creating instagram scraper");
         let mut scraper = InstagramScraper::default()
             .authenticate_with_login(config.instagram_username, config.instagram_password);
+        scraper.login().await?;
         let user_id = Self::get_user_id(&mut scraper).await?;
         let mut posts = Self::get_posts(&mut scraper, &user_id, 50).await?;
+        scraper.logout().await?;
         posts.sort_by_key(|x| x.taken_at_timestamp);
         for entry in posts.into_iter() {
             if entry.taken_at_timestamp > last_post_pubdate {

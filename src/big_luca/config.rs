@@ -12,7 +12,6 @@ pub struct Config {
     pub instagram_username: String,
     pub parameters_path: PathBuf,
     pub redis_url: String,
-    pub rsshub_url: String,
     pub teloxide_token: String,
 }
 
