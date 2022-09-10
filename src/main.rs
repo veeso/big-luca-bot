@@ -12,7 +12,6 @@ mod big_luca;
 mod feed;
 mod redis;
 mod repository;
-mod rsshub;
 mod utils;
 mod youtube;
 

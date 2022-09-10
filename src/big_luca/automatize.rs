@@ -4,13 +4,14 @@
 
 use crate::big_luca::redis::RedisRepository;
 
+use super::instagram::InstagramService;
 use super::repository::Repository;
-use super::rsshub::RssHubClient;
 use super::youtube::Youtube;
 use super::{AnswerBuilder, AphorismJar, Stickers, PARAMETERS};
 
 use chrono::Utc;
 use std::convert::TryFrom;
+use std::time::UNIX_EPOCH;
 use teloxide::prelude::*;
 use teloxide::types::ChatId;
 use thiserror::Error;
@@ -231,9 +232,9 @@ impl Automatizer {
         let last_post_pubdate = redis_client
             .get_last_instagram_update()
             .await?
-            .unwrap_or_else(Utc::now);
+            .unwrap_or(UNIX_EPOCH);
 
-        let post = match RssHubClient::get_oldest_unseen_post(last_post_pubdate).await {
+        let post = match InstagramService::get_oldest_unseen_post(last_post_pubdate).await {
             Ok(Some(v)) => v,
             Ok(None) => {
                 debug!("There's no new post to see");
@@ -245,22 +246,19 @@ impl Automatizer {
         };
         debug!(
             "last time I checked big-luca ig posts, big-luca ig post had date {:?}; latest has {:?}",
-            last_post_pubdate, post.date
+            last_post_pubdate, post.taken_at_timestamp
         );
-        let date = post.date.unwrap_or_else(Utc::now);
         let bot = Bot::from_env().auto_send();
         info!(
-            "Big luca published a ig post ({:?}): {}",
-            post.date,
-            post.title.as_deref().unwrap_or_default()
+            "Big luca published a ig post ({:?})",
+            post.taken_at_timestamp
         );
         let message = AnswerBuilder::default()
             .text(format!(
-                "😱😱😱 Il papi ha appena sganciato una nuova perla su instagram: {} 💣\n👉 {}",
-                post.title.as_deref().unwrap_or_default(),
-                post.url
+                "😱😱😱 Il papi ha appena sganciato una nuova perla su instagram: {} 💣",
+                post.caption.unwrap_or_default()
             ))
-            .sticker(Stickers::random())
+            .image(post.display_url)
             .finalize();
         for chat in Self::subscribed_chats().await?.iter() {
             debug!("sending new post notify to {}", chat);
@@ -268,7 +266,9 @@ impl Automatizer {
                 error!("failed to send scheduled aphorism to {}: {}", chat, err);
             }
         }
-        redis_client.set_last_instagram_update(date).await?;
+        redis_client
+            .set_last_instagram_update(post.taken_at_timestamp)
+            .await?;
         Ok(())
     }
 

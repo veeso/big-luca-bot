@@ -7,10 +7,10 @@ mod aphorism;
 mod automatize;
 mod commands;
 mod config;
+mod instagram;
 mod parameters;
 mod redis;
 mod repository;
-mod rsshub;
 mod stickers;
 mod youtube;
 
@@ -192,13 +192,11 @@ La lista di attesa può durare mesi e solo in pochi dopo una rigida selezione ri
 
     /// Get latest instagram post
     async fn get_latest_instagram_post() -> Answer {
-        match rsshub::RssHubClient::get_latest_post().await {
-            Ok(post) => Answer::simple_text(format!(
-                "😱 {}\n{} 👉 {}",
-                post.title.unwrap_or_default(),
-                post.summary,
-                post.url
-            )),
+        match instagram::InstagramService::get_latest_post().await {
+            Ok(post) => AnswerBuilder::default()
+                .text(format!("😱 {}", post.caption.unwrap_or_default()))
+                .image(post.display_url)
+                .finalize(),
             Err(err) => Self::error(err),
         }
     }

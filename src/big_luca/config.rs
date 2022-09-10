@@ -8,6 +8,8 @@ use std::path::PathBuf;
 /// Application config
 pub struct Config {
     pub database_url: String,
+    pub instagram_password: String,
+    pub instagram_username: String,
     pub parameters_path: PathBuf,
     pub redis_url: String,
     pub rsshub_url: String,

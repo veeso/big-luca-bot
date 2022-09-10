@@ -2,6 +2,8 @@
 //!
 //! This module exposes the big luca redis repository client
 
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
 use chrono::{DateTime, Utc};
 use teloxide::types::ChatId;
 
@@ -14,9 +16,9 @@ const LAST_VIDEO_PUBDATE: &str = "bigluca-bot:last_video_pubdate";
 #[cfg(test)]
 const LAST_VIDEO_PUBDATE: &str = "bigluca-bot-test:last_video_pubdate";
 #[cfg(not(test))]
-const LAST_INSTAGRAM_UPDATE: &str = "bigluca-bot:last_instagram_update";
+const LAST_INSTAGRAM_UPDATE: &str = "bigluca-bot:last_instagram_updatev2";
 #[cfg(test)]
-const LAST_INSTAGRAM_UPDATE: &str = "bigluca-bot-test:last_instagram_update";
+const LAST_INSTAGRAM_UPDATE: &str = "bigluca-bot-test:last_instagram_updatev2";
 #[cfg(not(test))]
 const APHORISM_JAR: &str = "bigluca-bot:aphorism-jar";
 #[cfg(test)]
@@ -61,24 +63,21 @@ impl RedisRepository {
     }
 
     /// get last video publication date
-    pub async fn get_last_instagram_update(&mut self) -> anyhow::Result<Option<DateTime<Utc>>> {
+    pub async fn get_last_instagram_update(&mut self) -> anyhow::Result<Option<SystemTime>> {
         self.redis
-            .get::<String>(LAST_INSTAGRAM_UPDATE)
+            .get::<u64>(LAST_INSTAGRAM_UPDATE)
             .await
             .map_err(|e| anyhow::anyhow!("failed to get last instagram update: {}", e))
-            .map(|x| {
-                x.and_then(|x| {
-                    DateTime::parse_from_rfc3339(&x)
-                        .ok()
-                        .map(|x| DateTime::from_utc(x.naive_utc(), Utc))
-                })
-            })
+            .map(|x| x.map(|x| UNIX_EPOCH.checked_add(Duration::from_secs(x)).unwrap()))
     }
 
     /// Set last video pubdate
-    pub async fn set_last_instagram_update(&mut self, date: DateTime<Utc>) -> anyhow::Result<()> {
+    pub async fn set_last_instagram_update(&mut self, time: SystemTime) -> anyhow::Result<()> {
         self.redis
-            .set(LAST_INSTAGRAM_UPDATE, date.to_rfc3339().as_str())
+            .set(
+                LAST_INSTAGRAM_UPDATE,
+                time.duration_since(UNIX_EPOCH).unwrap().as_secs(),
+            )
             .await
             .map_err(|e| anyhow::anyhow!("failed to set last instagram update: {}", e))
     }

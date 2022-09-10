@@ -7,7 +7,7 @@
 <p align="center">~ Le perle e le news del papi su Telegram in ogni momento ~</p>
 
 <p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
-<p align="center">Current version: 0.5.0 (05/09/2022)</p>
+<p align="center">Current version: 0.6.0 (10/09/2022)</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/Unlicense"
@@ -135,8 +135,8 @@ If you want to develop on this bot, you can follow these simple steps:
 4. Set your API key in your environment using the variable `TELOXIDE_TOKEN`
 5. Set your database path in your environment using the variable `DATABASE_URI`
 6. Set the path to `parameters.json` in your environment using the variable `PARAMETERS_PATH`
-7. Set your rsshub url in your environment using the variable `RSSHUB_URL`
-8. Set your redis url in your environment using the variable `REDIS_URL`
+7. Set your redis url in your environment using the variable `REDIS_URL`
+8. Set your instagram credentials in your environment using the variable `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWSORD`
 9. Touch the database file `touch $DATABASE_URI`
 10. Run the big-luca bot
 

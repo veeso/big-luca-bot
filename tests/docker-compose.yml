@@ -9,15 +9,3 @@ services:
         volumes:
             - /tmp/redis:/data
 
-    rsshub:
-        image: diygod/rsshub
-        restart: always
-        ports:
-            - '1200:1200'
-        environment:
-            NODE_ENV: production
-            CACHE_TYPE: redis
-            REDIS_URL: 'redis://redis:6379/'
-            PUPPETEER_WS_ENDPOINT: 'ws://browserless:3000'  # marked
-        depends_on:
-            - redis
