@@ -248,29 +248,27 @@ impl Automatizer {
             last_post_pubdate, post.date
         );
         let date = post.date.unwrap_or_else(Utc::now);
-        if last_post_pubdate < date {
-            let bot = Bot::from_env().auto_send();
-            info!(
-                "Big luca published a ig post ({:?}): {}",
-                post.date,
-                post.title.as_deref().unwrap_or_default()
-            );
-            let message = AnswerBuilder::default()
-                .text(format!(
-                    "😱😱😱 Il papi ha appena sganciato una nuova perla su instagram: {} 💣\n👉 {}",
-                    post.title.as_deref().unwrap_or_default(),
-                    post.url
-                ))
-                .sticker(Stickers::random())
-                .finalize();
-            for chat in Self::subscribed_chats().await?.iter() {
-                debug!("sending new post notify to {}", chat);
-                if let Err(err) = message.clone().send(&bot, *chat).await {
-                    error!("failed to send scheduled aphorism to {}: {}", chat, err);
-                }
+        let bot = Bot::from_env().auto_send();
+        info!(
+            "Big luca published a ig post ({:?}): {}",
+            post.date,
+            post.title.as_deref().unwrap_or_default()
+        );
+        let message = AnswerBuilder::default()
+            .text(format!(
+                "😱😱😱 Il papi ha appena sganciato una nuova perla su instagram: {} 💣\n👉 {}",
+                post.title.as_deref().unwrap_or_default(),
+                post.url
+            ))
+            .sticker(Stickers::random())
+            .finalize();
+        for chat in Self::subscribed_chats().await?.iter() {
+            debug!("sending new post notify to {}", chat);
+            if let Err(err) = message.clone().send(&bot, *chat).await {
+                error!("failed to send scheduled aphorism to {}: {}", chat, err);
             }
-            redis_client.set_last_instagram_update(date).await?;
         }
+        redis_client.set_last_instagram_update(date).await?;
         Ok(())
     }
 
