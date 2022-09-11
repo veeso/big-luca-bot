@@ -25,6 +25,13 @@ jobs:
         with:
           command: test
           args: --no-fail-fast --all-features
+        env:
+          DATABASE_URL: /tmp/test.db
+          INSTAGRAM_PASSWORD: "foo"
+          INSTAGRAM_USERNAME: "foo"
+          PARMETERS_PATH: config/parameters.json
+          REDIS_URL: redis://localhost
+          TELOXIDE_TOKEN: foobar
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy
