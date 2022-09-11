@@ -15,6 +15,8 @@ jobs:
         run: |
           docker volume create redis-data
           docker-compose -f "tests/docker-compose.yml" up -d --build
+          touch /tmp/test.db
+          mkdir -p /tmp/redis
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -26,12 +28,12 @@ jobs:
           command: test
           args: --no-fail-fast --all-features
         env:
-          DATABASE_URL: /tmp/test.db
-          INSTAGRAM_PASSWORD: "foo"
-          INSTAGRAM_USERNAME: "foo"
-          PARMETERS_PATH: config/parameters.json
-          REDIS_URL: redis://localhost
-          TELOXIDE_TOKEN: foobar
+          database_url: /tmp/test.db
+          instagram_password: "foo"
+          instagram_username: "foo"
+          parmeters_path: config/parameters.json
+          redis_url: redis://localhost
+          teloxide_token: foobar
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy
