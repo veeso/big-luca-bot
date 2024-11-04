@@ -33,4 +33,5 @@ jobs:
           instagram_username: "foo"
           parmeters_path: config/parameters.json
           redis_url: redis://localhost
+          REDIS_URL: redis://localhost
           teloxide_token: foobar

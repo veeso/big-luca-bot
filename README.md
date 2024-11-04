@@ -127,12 +127,12 @@ If you want to develop on this bot, you can follow these simple steps:
 2. Create your bot with the [Botfather](https://t.me/botfather)
 3. Get your API key
 4. Set your API key in your environment using the variable `TELOXIDE_TOKEN`
-5. Set your database path in your environment using the variable `DATABASE_URI`
+5. Set your database path in your environment using the variable `DATABASE_URL`
 6. Set the path to `parameters.json` in your environment using the variable `PARAMETERS_PATH`
 7. Set your redis url in your environment using the variable `REDIS_URL`
 8. Set your instagram credentials in your environment using the variable `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWSORD` (optional)
 9. Set `BIG_LUCA_PIDFILE` to the location where pidfile will be written (optional)
-10. Touch the database file `touch $DATABASE_URI`
+10. Touch the database file `touch $DATABASE_URL`
 11. Run the big-luca bot
 
 Or use `big-luca-bot.sh` script with `start/stop` commands

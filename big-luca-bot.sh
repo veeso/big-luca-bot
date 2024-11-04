@@ -25,7 +25,7 @@ start() {
   . $ENV
   set +a
 
-  touch "$DATABASE_URI"
+  touch "$DATABASE_URL"
 
   CMD="$(which $APP_NAME)"
   if [ -z "$CMD" ]; then
