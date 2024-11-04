@@ -25,6 +25,8 @@ start() {
   . $ENV
   set +a
 
+  touch "$DATABASE_URI"
+
   CMD="$(which $APP_NAME)"
   if [ -z "$CMD" ]; then
     CMD="$CARGO run -r"

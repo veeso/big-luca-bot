@@ -14,19 +14,19 @@ jobs:
       - name: Setup containers
         run: |
           docker volume create redis-data
-          docker-compose -f "tests/docker-compose.yml" up -d --build
+          docker compose -f "tests/docker-compose.yml" up -d --build
           touch /tmp/test.db
           mkdir -p /tmp/redis
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          override: true
           components: rustfmt, clippy
+      - name: format
+        run: cargo fmt --all -- --check
+      - name: lint
+        run: cargo clippy -- -Dwarnings
       - name: Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --no-fail-fast --all-features
+        run: cargo test --no-fail-fast --all-features
         env:
           database_url: /tmp/test.db
           instagram_password: "foo"
@@ -34,7 +34,3 @@ jobs:
           parmeters_path: config/parameters.json
           redis_url: redis://localhost
           teloxide_token: foobar
-      - name: Format
-        run: cargo fmt --all -- --check
-      - name: Clippy
-        run: cargo clippy -- -Dwarnings
