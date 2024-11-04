@@ -65,7 +65,7 @@ impl BigLuca {
     /// Run big luca bot
     pub async fn run(self) -> anyhow::Result<()> {
         info!("running bot without webhooks");
-        teloxide::repl(self.bot, Self::answer).await;
+        Command::repl(self.bot, Self::answer).await;
         Ok(())
     }
 
