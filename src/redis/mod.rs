@@ -23,7 +23,7 @@ impl RedisClient {
     where
         V: ToRedisArgs + Send + Sync + std::fmt::Debug,
     {
-        let mut connection = self.client.get_async_connection().await?;
+        let mut connection = self.client.get_multiplexed_async_connection().await?;
         debug!("SET {} to {:?}", key, value);
         connection.set(key, value).await
     }
@@ -33,21 +33,21 @@ impl RedisClient {
     where
         V: FromRedisValue,
     {
-        let mut connection = self.client.get_async_connection().await?;
+        let mut connection = self.client.get_multiplexed_async_connection().await?;
         debug!("GET {}", key);
         connection.get(key).await
     }
 
     /// Get all keys matching `pattern`
     pub async fn keys(&mut self, pattern: &str) -> RedisResult<Vec<String>> {
-        let mut connection = self.client.get_async_connection().await?;
+        let mut connection = self.client.get_multiplexed_async_connection().await?;
         debug!("KEYS {}", pattern);
         connection.keys(pattern).await
     }
 
     /// Delete key
     pub async fn delete(&mut self, key: &str) -> RedisResult<()> {
-        let mut connection = self.client.get_async_connection().await?;
+        let mut connection = self.client.get_multiplexed_async_connection().await?;
         debug!("DEL {}", key);
         connection.del(key).await
     }
@@ -57,7 +57,7 @@ impl RedisClient {
     where
         V: ToRedisArgs + Send + Sync + std::fmt::Debug,
     {
-        let mut connection = self.client.get_async_connection().await?;
+        let mut connection = self.client.get_multiplexed_async_connection().await?;
         debug!("RPUSH {} {:?}", key, value);
         connection.rpush(key, value).await
     }
@@ -67,14 +67,14 @@ impl RedisClient {
     where
         V: FromRedisValue,
     {
-        let mut connection = self.client.get_async_connection().await?;
+        let mut connection = self.client.get_multiplexed_async_connection().await?;
         debug!("LINDEX {} {}", key, index);
         connection.lindex(key, index).await
     }
 
     /// Get list length
     pub async fn list_len(&mut self, key: &str) -> RedisResult<usize> {
-        let mut connection = self.client.get_async_connection().await?;
+        let mut connection = self.client.get_multiplexed_async_connection().await?;
         debug!("LLEN {}", key);
         connection.llen(key).await
     }
@@ -82,9 +82,9 @@ impl RedisClient {
 
 #[cfg(test)]
 mod test {
-    use super::*;
-
     use pretty_assertions::assert_eq;
+
+    use super::*;
 
     #[tokio::test]
     async fn should_set_key() {

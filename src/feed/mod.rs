@@ -2,11 +2,12 @@
 //!
 //! This module exposes the types for the feed
 
-use crate::utils::str as str_helpers;
+use std::slice::Iter;
 
 use chrono::{DateTime, Utc};
 use feed_rs::model::{Entry as RssEntry, Feed as RssFeed};
-use std::slice::Iter;
+
+use crate::utils::str as str_helpers;
 
 /// Contains, for a feed source, the list of entries fetched from remote
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -52,7 +53,7 @@ impl From<RssEntry> for Entry {
             summary: content_or_summary,
             url: entry
                 .links
-                .get(0)
+                .first()
                 .map(|x| x.href.clone())
                 .unwrap_or(entry.id),
             date: entry.published.or(entry.updated).map(DateTime::<Utc>::from),
@@ -83,10 +84,10 @@ fn content_or_summary(entry: &RssEntry) -> String {
 #[cfg(test)]
 mod test {
 
-    use super::*;
-
     use feed_rs::model::FeedType;
     use pretty_assertions::assert_eq;
+
+    use super::*;
 
     #[test]
     fn should_get_feed_attributes() {

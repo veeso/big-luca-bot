@@ -16,14 +16,21 @@ impl InstagramService {
     /// Get newest (latest) post from instagram
     pub async fn get_latest_post() -> anyhow::Result<Post> {
         let config = Config::try_from_env()?;
+        let (username, password) = match (
+            config.instagram_username.as_ref(),
+            config.instagram_password.as_ref(),
+        ) {
+            (Some(username), Some(password)) => (username, password),
+            _ => anyhow::bail!("Instagram username and password are required"),
+        };
+
         debug!("creating instagram scraper");
-        let mut scraper = InstagramScraper::default()
-            .authenticate_with_login(config.instagram_username, config.instagram_password);
+        let mut scraper = InstagramScraper::default().authenticate_with_login(username, password);
         scraper.login().await?;
         let user_id = Self::get_user_id(&mut scraper).await?;
         let posts = Self::get_posts(&mut scraper, &user_id, 1).await?;
         scraper.logout().await?;
-        if let Some(post) = posts.get(0) {
+        if let Some(post) = posts.first() {
             Ok(post.clone())
         } else {
             anyhow::bail!("Non ho trovato nessun post sull'instagram del papi");
@@ -35,9 +42,16 @@ impl InstagramService {
         last_post_pubdate: SystemTime,
     ) -> anyhow::Result<Option<Post>> {
         let config = Config::try_from_env()?;
+        let (username, password) = match (
+            config.instagram_username.as_ref(),
+            config.instagram_password.as_ref(),
+        ) {
+            (Some(username), Some(password)) => (username, password),
+            _ => anyhow::bail!("Instagram username and password are required"),
+        };
+
         debug!("creating instagram scraper");
-        let mut scraper = InstagramScraper::default()
-            .authenticate_with_login(config.instagram_username, config.instagram_password);
+        let mut scraper = InstagramScraper::default().authenticate_with_login(username, password);
         scraper.login().await?;
         let user_id = Self::get_user_id(&mut scraper).await?;
         let mut posts = Self::get_posts(&mut scraper, &user_id, 50).await?;

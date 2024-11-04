@@ -2,20 +2,20 @@
 //!
 //! A module to automatize messages
 
-use crate::big_luca::redis::RedisRepository;
+use std::convert::TryFrom;
+use std::time::UNIX_EPOCH;
+
+use chrono::Utc;
+use teloxide::prelude::*;
+use teloxide::types::ChatId;
+use thiserror::Error;
+use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
 
 use super::instagram::InstagramService;
 use super::repository::Repository;
 use super::youtube::Youtube;
 use super::{AnswerBuilder, AphorismJar, Stickers, PARAMETERS};
-
-use chrono::Utc;
-use std::convert::TryFrom;
-use std::time::UNIX_EPOCH;
-use teloxide::prelude::*;
-use teloxide::types::ChatId;
-use thiserror::Error;
-use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
+use crate::big_luca::redis::RedisRepository;
 
 type AutomatizerResult<T> = Result<T, AutomatizerError>;
 
@@ -156,7 +156,7 @@ impl Automatizer {
     async fn send_perla() -> anyhow::Result<()> {
         let parameters = PARAMETERS.get().unwrap();
         let mut aphorism_jar = AphorismJar::try_from(parameters.aphorisms.as_slice())?;
-        let bot = Bot::from_env().auto_send();
+        let bot = Bot::from_env();
         for chat in Self::subscribed_chats().await?.iter() {
             debug!("sending scheduled aphorism to {}", chat);
             let aphorism = match aphorism_jar.get_next(chat).await {
@@ -201,7 +201,7 @@ impl Automatizer {
         );
         let date = video.date.unwrap_or_else(Utc::now);
         if last_video_pubdate < date {
-            let bot = Bot::from_env().auto_send();
+            let bot = Bot::from_env();
             info!(
                 "Big luca published a new video ({:?}): {}",
                 video.date,
@@ -248,7 +248,7 @@ impl Automatizer {
             "last time I checked big-luca ig posts, big-luca ig post had date {:?}; latest has {:?}",
             last_post_pubdate, post.taken_at_timestamp
         );
-        let bot = Bot::from_env().auto_send();
+        let bot = Bot::from_env();
         info!(
             "Big luca published a ig post ({:?})",
             post.taken_at_timestamp

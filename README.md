@@ -1,7 +1,7 @@
 # big-luca-bot
 
 <p align="center">
-  <img src="/docs/images/big-luca-bot.png" width="256" height="256" />
+  <img src="/docs/images/big-luca-bot.png" width="256" height="256" alt="logo" />
 </p>
 
 <p align="center">~ Le perle e le news del papi su Telegram in ogni momento ~</p>
@@ -42,11 +42,6 @@
       src="https://github.com/veeso/big-luca-bot/workflows/Build/badge.svg"
       alt="Build CI"
   /></a>
-  <a href="https://coveralls.io/github/veeso/big-luca-bot"
-    ><img
-      src="https://coveralls.io/repos/github/veeso/big-luca-bot/badge.svg"
-      alt="Coveralls"
-  /></a>
 </p>
 
 ---
@@ -58,7 +53,6 @@
     - [Users](#users)
     - [Developers](#developers)
       - [Configure parameters](#configure-parameters)
-      - [Deploy with heroku](#deploy-with-heroku)
   - [Support the developer ☕](#support-the-developer-)
   - [Powered by 💪](#powered-by-)
   - [Contributing and issues 🤝🏻](#contributing-and-issues-)
@@ -112,7 +106,7 @@ big-luca-bot is a Telegram bot to get the best aphorisms said by Big Luca and to
     This command will display the latest video from "Il Papi"
 
 <p align="center">
-  <img src="/docs/images/big-telegram.webp" />
+  <img src="/docs/images/big-telegram.webp" alt="telegram qr code" />
 </p>
 
 ---
@@ -136,21 +130,16 @@ If you want to develop on this bot, you can follow these simple steps:
 5. Set your database path in your environment using the variable `DATABASE_URI`
 6. Set the path to `parameters.json` in your environment using the variable `PARAMETERS_PATH`
 7. Set your redis url in your environment using the variable `REDIS_URL`
-8. Set your instagram credentials in your environment using the variable `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWSORD`
-9. Touch the database file `touch $DATABASE_URI`
-10. Run the big-luca bot
+8. Set your instagram credentials in your environment using the variable `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWSORD` (optional)
+9. Set `BIG_LUCA_PIDFILE` to the location where pidfile will be written (optional)
+10. Touch the database file `touch $DATABASE_URI`
+11. Run the big-luca bot
+
+Or use `big-luca-bot.sh` script with `start/stop` commands
 
 #### Configure parameters
 
 You can add custom aphorisms and courses using the `parameters.json` file. Default file is located at `config/parameters.json` from the project root folder.
-
-#### Deploy with heroku
-
-You can then deploy your own version of the big-luca bot using `heroku`, with these simple steps:
-
-1. Create your heroku app `heroku create --buildpack emk/rust`
-2. configure the Telegram API key with `heroku config:set TELOXIDE_TOKEN=<YOUR_API_KEY>`
-3. git push heroku main
 
 ---
 

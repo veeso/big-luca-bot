@@ -2,11 +2,11 @@
 //!
 //! this module contains the chat entity repository
 
-use super::{RepositoryError, RepositoryResult};
-
 use chrono::{DateTime, FixedOffset, Utc};
 use sqlx::{Pool, Sqlite};
 use teloxide::types::ChatId;
+
+use super::{RepositoryError, RepositoryResult};
 
 #[derive(sqlx::FromRow, Debug, Clone, Eq, PartialEq)]
 pub struct Chat {

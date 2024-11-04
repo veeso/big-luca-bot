@@ -25,6 +25,19 @@ async fn main() -> anyhow::Result<()> {
         APP_VERSION, APP_AUTHORS
     );
     let big = BigLuca::init().await?;
+
+    if std::env::var("BIG_LUCA_PIDFILE").is_ok() {
+        write_pidfile()?;
+    }
+
     info!("application ready!");
     big.run().await
+}
+
+/// Write pidfile
+fn write_pidfile() -> anyhow::Result<()> {
+    let pid = std::process::id();
+    let pidfile = std::env::var("BIG_LUCA_PIDFILE")?;
+    std::fs::write(pidfile, pid.to_string())?;
+    Ok(())
 }

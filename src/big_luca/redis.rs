@@ -7,9 +7,8 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use chrono::{DateTime, Utc};
 use teloxide::types::ChatId;
 
-use crate::redis::RedisClient;
-
 use super::Config;
+use crate::redis::RedisClient;
 
 #[cfg(not(test))]
 const LAST_VIDEO_PUBDATE: &str = "bigluca-bot:last_video_pubdate";
@@ -49,7 +48,7 @@ impl RedisRepository {
                 x.and_then(|x| {
                     DateTime::parse_from_rfc3339(&x)
                         .ok()
-                        .map(|x| DateTime::from_utc(x.naive_utc(), Utc))
+                        .map(|x| DateTime::from_naive_utc_and_offset(x.naive_utc(), Utc))
                 })
             })
     }

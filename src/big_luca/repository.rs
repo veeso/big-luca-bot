@@ -2,11 +2,11 @@
 //!
 //! This module contains the interface to the bot repository
 
-use crate::repository::{chat::Chat, SqliteDb};
-
 use teloxide::types::ChatId;
 
 use super::Config;
+use crate::repository::chat::Chat;
+use crate::repository::SqliteDb;
 
 pub struct Repository {
     db: SqliteDb,

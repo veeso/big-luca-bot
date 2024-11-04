@@ -2,13 +2,15 @@
 //!
 //! This module contains the papi's aphorisms
 
-use crate::big_luca::RedisRepository;
+use std::convert::TryFrom;
 
 use data_encoding::HEXLOWER;
-use rand::{seq::SliceRandom, thread_rng};
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use ring::digest::{Context, SHA256};
-use std::convert::TryFrom;
 use teloxide::types::ChatId;
+
+use crate::big_luca::RedisRepository;
 
 pub struct AphorismJar {
     aphorisms: Vec<String>,
@@ -100,10 +102,10 @@ impl TryFrom<&[String]> for AphorismJar {
 #[cfg(test)]
 mod test {
 
+    use std::path::Path;
+
     use super::*;
     use crate::big_luca::Parameters;
-
-    use std::path::Path;
 
     #[tokio::test]
     async fn should_get_random_aphorism() {

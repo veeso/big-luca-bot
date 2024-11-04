@@ -2,13 +2,15 @@
 //!
 //! A youtube feed client
 
-use feed_rs::parser as feed_parser;
 use std::io::Cursor;
+
+use feed_rs::parser as feed_parser;
 
 mod errors;
 
-use crate::feed::Feed;
 pub use errors::{YoutubeError, YoutubeResult};
+
+use crate::feed::Feed;
 
 /// Youtube feed client
 pub struct YoutubeClient {

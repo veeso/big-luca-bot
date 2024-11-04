@@ -65,9 +65,9 @@ impl SqliteDb {
 #[cfg(test)]
 mod test {
 
-    use super::*;
-
     use tempfile::NamedTempFile;
+
+    use super::*;
 
     #[tokio::test]
     async fn should_init_sqlite3_database() {
